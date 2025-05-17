@@ -73,16 +73,4 @@
   .clay-blob {
     @apply absolute rounded-full blur-3xl opacity-20;
   }
-
-  .navbar-gradient {
-    @apply bg-gradient-to-r from-gremio-primary to-gremio-secondary;
-  }
-  
-  .menu-item {
-    @apply text-white hover:text-white/80 transition-colors;
-  }
-  
-  .menu-container {
-    @apply bg-white/10 backdrop-blur-lg px-8 py-2 rounded-full;
-  }
 }
