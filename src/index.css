@@ -73,4 +73,9 @@
   .clay-blob {
     @apply absolute rounded-full blur-3xl opacity-20;
   }
+
+  /* Menu specific claymorphism styles */
+  .nav-item-active {
+    @apply bg-white text-gremio-primary shadow-clay-inner;
+  }
 }

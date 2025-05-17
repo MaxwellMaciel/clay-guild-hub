@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="bg-button-gradient text-white">
+    <footer className="bg-button-gradient text-white mt-20 rounded-t-[2.5rem] shadow-clay-lg overflow-hidden relative">
       <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           <div>
@@ -60,6 +60,10 @@ const Footer = () => {
           </div>
         </div>
       </div>
+      
+      {/* Clay blobs para efeito decorativo */}
+      <div className="clay-blob w-64 h-64 bg-gremio-light left-10 bottom-10"></div>
+      <div className="clay-blob w-80 h-80 bg-gremio-primary/30 right-[-5%] top-[-10%]"></div>
     </footer>
   );
 };
