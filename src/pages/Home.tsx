@@ -4,25 +4,29 @@ import { ArrowRight } from "lucide-react";
 
 const Home = () => {
   return (
-    <main>
+    <main className="relative">
+      {/* Background blobs */}
+      <div className="clay-blob w-96 h-96 bg-pink-200 top-20 -left-48"></div>
+      <div className="clay-blob w-80 h-80 bg-purple-200 bottom-40 -right-40"></div>
+      
       {/* Hero Section */}
-      <section className="bg-hero-gradient py-20 px-4">
+      <section className="bg-hero-gradient py-24 px-4 relative overflow-hidden">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto py-10 text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gremio-primary mb-6 animate-float">
+          <div className="max-w-3xl mx-auto py-12 px-8 md:px-12 text-center bg-white/50 rounded-clay backdrop-blur-sm shadow-clay">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gremio-primary mb-8 animate-float">
               Bem-vindo ao Grêmio Estudantil!
             </h1>
-            <p className="text-lg md:text-xl text-foreground/80 mb-6">
+            <p className="text-lg md:text-xl text-foreground/80 mb-8">
               Somos a sua voz na escola, trabalhando juntos para criar uma experiência escolar mais 
               <span className="text-gremio-primary font-medium"> dinâmica</span>, 
               <span className="text-blue-400 font-medium"> inclusiva</span> e 
               <span className="text-gremio-light font-medium"> divertida</span> para todos.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
-              <Link to="/projetos" className="clay-button flex items-center justify-center gap-2">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center mt-10">
+              <Link to="/projetos" className="clay-button flex items-center justify-center gap-2 text-base">
                 Nossos Projetos <ArrowRight size={18} />
               </Link>
-              <Link to="/contato" className="bg-white rounded-full px-6 py-3 shadow-clay hover:shadow-clay-sm text-gremio-primary flex items-center justify-center gap-2 transition-all duration-300 hover:translate-y-[1px]">
+              <Link to="/contato" className="bg-white rounded-full px-6 py-3 shadow-clay-sm hover:shadow-clay text-gremio-primary flex items-center justify-center gap-2 transition-all duration-300 hover:translate-y-[1px] text-base">
                 Envie sua Ideia <span className="inline-block">💡</span>
               </Link>
             </div>
@@ -31,12 +35,12 @@ const Home = () => {
       </section>
 
       {/* Mission Section */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-24 px-4 bg-white relative">
         <div className="container mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gremio-primary mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gremio-primary mb-14">
             Nossa Missão
           </h2>
-          <p className="text-lg text-center max-w-4xl mx-auto mb-12 text-foreground/80">
+          <p className="text-lg text-center max-w-4xl mx-auto mb-16 text-foreground/80">
             O Grêmio Estudantil da Escola Modelo existe para construir pontes, inspirar ações e transformar o ambiente escolar em um lugar onde cada estudante se sinta ouvido, valorizado e engajado.
           </p>
 
@@ -45,55 +49,61 @@ const Home = () => {
               icon="📣"
               title="Representar e Amplificar"
               description="Ser a voz ativa dos estudantes, levando suas ideias, necessidades e preocupações para construir uma escola mais democrática e participativa."
+              color="bg-gremio-soft"
             />
             <MissionCard 
               icon="🤝"
               title="Promover e Integrar"
               description="Organizar eventos e projetos que incentivem a cultura, o esporte, o lazer e a integração, fortalecendo os laços e o sentimento de comunidade."
+              color="bg-gremio-pink"
             />
             <MissionCard 
               icon="🎯"
               title="Inovar e Transformar"
               description="Buscar soluções criativas e sustentáveis para os desafios da vida escolar, incentivando o protagonismo juvenil e o desenvolvimento de habilidades."
+              color="bg-gremio-blue"
             />
           </div>
         </div>
       </section>
 
       {/* Updates Section */}
-      <section className="py-16 px-4 bg-gremio-gray">
+      <section className="py-24 px-4 bg-gremio-gray relative">
         <div className="container mx-auto">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-center mb-10">
             <h2 className="text-3xl font-bold text-gremio-primary">Fique por Dentro</h2>
             <Link to="/noticias" className="text-gremio-primary hover:underline flex items-center gap-1">
               Todas as Notícias <ArrowRight size={16} />
             </Link>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <NewsCard 
               title="Início do Projeto Horta Comunitária"
               date="14/05/2023"
               excerpt="É com grande alegria que anunciamos o início do Projeto Horta Comunitária da nossa escola! As atividades começaram..."
+              iconColor="bg-gremio-mint"
             />
             <NewsCard 
               title="Arrecadação de Agasalhos - Campanha Solidária"
               date="09/05/2023"
               excerpt="O Grêmio Estudantil está organizando uma campanha de arrecadação de agasalhos para ajudar pessoas em..."
+              iconColor="bg-gremio-pink"
             />
             <NewsCard 
               title="Resultado do Campeonato Interclasses"
               date="01/05/2023"
               excerpt="O Campeonato Interclasses 2023 foi um sucesso! Após semanas de competições acirradas, temos os vencedores: Futsal: 3º ano A..."
+              iconColor="bg-gremio-blue"
             />
           </div>
         </div>
       </section>
 
       {/* Initiatives Section */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-24 px-4 bg-white relative">
         <div className="container mx-auto">
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-center mb-10">
             <h2 className="text-3xl font-bold text-gremio-primary">Nossas Iniciativas</h2>
             <Link to="/projetos" className="text-gremio-primary hover:underline flex items-center gap-1">
               Todos os Projetos <ArrowRight size={16} />
@@ -136,11 +146,12 @@ type MissionCardProps = {
   icon: string;
   title: string;
   description: string;
+  color: string;
 };
 
-const MissionCard = ({ icon, title, description }: MissionCardProps) => (
-  <div className="clay-card card-gradient">
-    <div className="h-16 w-16 mx-auto mb-4 rounded-full bg-gremio-soft shadow-clay flex items-center justify-center text-3xl">
+const MissionCard = ({ icon, title, description, color }: MissionCardProps) => (
+  <div className="clay-card hover:shadow-clay-lg hover:-translate-y-2 transition-all duration-300">
+    <div className={`h-20 w-20 mx-auto mb-6 rounded-full ${color} shadow-clay flex items-center justify-center text-4xl`}>
       {icon}
     </div>
     <h3 className="text-xl font-bold text-center text-gremio-primary mb-4">{title}</h3>
@@ -152,11 +163,12 @@ type NewsCardProps = {
   title: string;
   date: string;
   excerpt: string;
+  iconColor: string;
 };
 
-const NewsCard = ({ title, date, excerpt }: NewsCardProps) => (
-  <div className="clay-card hover:shadow-clay-lg hover:-translate-y-1 transition-all duration-300">
-    <div className="h-12 w-12 mb-6 rounded-full bg-gremio-soft flex items-center justify-center text-gremio-primary">
+const NewsCard = ({ title, date, excerpt, iconColor }: NewsCardProps) => (
+  <div className="clay-card hover:shadow-clay-lg hover:-translate-y-2 transition-all duration-300">
+    <div className={`h-16 w-16 mb-6 rounded-full ${iconColor} flex items-center justify-center text-gremio-primary shadow-clay-sm`}>
       <svg 
         xmlns="http://www.w3.org/2000/svg" 
         width="24" 
@@ -173,8 +185,8 @@ const NewsCard = ({ title, date, excerpt }: NewsCardProps) => (
       </svg>
     </div>
     <h3 className="text-xl font-bold text-gremio-primary mb-2">{title}</h3>
-    <time className="text-sm text-foreground/60 mb-3 block">{date}</time>
-    <p className="text-foreground/80 mb-4">{excerpt}</p>
+    <time className="text-sm text-foreground/60 mb-4 block">{date}</time>
+    <p className="text-foreground/80 mb-5">{excerpt}</p>
     <Link to="/noticias" className="text-gremio-primary hover:underline flex items-center gap-1 text-sm font-medium">
       Ler mais <ArrowRight size={14} />
     </Link>
@@ -208,14 +220,14 @@ const ProjectCard = ({ tag, title, description, startDate, endDate, people }: Pr
   }
 
   return (
-    <div className="clay-card hover:shadow-clay-lg hover:-translate-y-1 transition-all duration-300">
+    <div className="clay-card hover:shadow-clay-lg hover:-translate-y-2 transition-all duration-300">
       <div className={`inline-block px-3 py-1 rounded-full text-xs font-medium mb-4 ${tagColor}`}>
         {tag}
       </div>
-      <h3 className="text-xl font-bold text-gremio-primary mb-3">{title}</h3>
-      <p className="text-foreground/80 mb-4">{description}</p>
+      <h3 className="text-xl font-bold text-gremio-primary mb-4">{title}</h3>
+      <p className="text-foreground/80 mb-5">{description}</p>
       
-      <div className="flex gap-4 mb-4 text-sm">
+      <div className="flex gap-4 mb-5 text-sm">
         <div>
           <span className="text-foreground/60 block mb-1">Início:</span>
           <time className="font-medium">{startDate}</time>
@@ -226,11 +238,11 @@ const ProjectCard = ({ tag, title, description, startDate, endDate, people }: Pr
         </div>
       </div>
       
-      <div className="border-t border-gremio-gray pt-3">
+      <div className="border-t border-gremio-gray pt-4">
         <span className="text-foreground/60 text-sm block mb-2">Responsáveis:</span>
         <div className="flex flex-wrap gap-2">
           {people.map((person, i) => (
-            <span key={i} className="bg-gremio-soft px-3 py-1 rounded-full text-sm">
+            <span key={i} className="clay-pill text-gremio-primary">
               {person}
             </span>
           ))}
