@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { ArrowRight, Megaphone, Handshake, Target } from "lucide-react";
 
@@ -94,8 +93,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Fique por Dentro Section */}
-      <section className="max-w-6xl mx-auto py-12 bg-gradient-to-br from-[#f8f6ff] to-[#eaecff] rounded-3xl px-4 md:px-8">
+      {/* Fique por Dentro Section - background container removed */}
+      <section className="max-w-6xl mx-auto py-12 px-4 md:px-8">
         <div className="flex justify-between items-center mb-10">
           <h2 className="text-4xl font-bold text-[#8464fb]">Fique por Dentro</h2>
           <Link to="/noticias" className="flex items-center gap-2 text-[#8464fb] hover:underline font-medium bg-white px-5 py-2 rounded-full shadow-clay-sm">
@@ -175,9 +174,51 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Nossas Iniciativas Section */}
+      <section className="max-w-6xl mx-auto py-16 px-4">
+        <div className="flex justify-between items-center mb-10">
+          <h2 className="text-4xl font-bold text-[#8464fb]">Nossas Iniciativas</h2>
+          <Link to="/projetos" className="flex items-center gap-2 text-[#8464fb] hover:underline font-medium bg-white px-5 py-2 rounded-full shadow-clay-sm">
+            Todos os Projetos
+            <ArrowRight size={18} />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Initiative Card */}
+          <div className="rounded-3xl bg-[#f0e9ff] overflow-hidden">
+            <div className="flex justify-center items-center h-64 bg-[#f0e9ff] relative">
+              <div className="w-20 h-20 rounded-full bg-[#8464fb]/20 flex items-center justify-center">
+                <Target className="text-[#9b87f5] w-10 h-10 opacity-60" />
+              </div>
+            </div>
+            <div className="p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="bg-[#d6bcfa]/50 text-[#8464fb] px-4 py-1 rounded-full text-sm flex items-center gap-1">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                  </svg>
+                  Em Andamento
+                </span>
+              </div>
+              <h3 className="text-2xl font-bold text-[#8464fb] mt-2">Horta Comunitária Escolar</h3>
+              <p className="text-gray-600 my-4">
+                Projeto para criar e manter uma horta nos espaços da escola,
+                envolvendo alunos de todas as séries. A iniciativa busca promover
+                a educação ambiental, alimentação saudável e trabalho em equipe.
+              </p>
+              <Link to="/projetos" className="text-[#8464fb] flex items-center gap-1 hover:underline mt-2">
+                Ver detalhes <ArrowRight size={16} />
+              </Link>
+            </div>
+          </div>
+
+          {/* You can add more initiative cards here when needed */}
+        </div>
+      </section>
     </main>
   );
 };
 
 export default Home;
-
