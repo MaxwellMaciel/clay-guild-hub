@@ -11,7 +11,7 @@ const Navbar = () => {
       <div className="w-full rounded-full bg-white/80 backdrop-blur-md shadow-clay-sm border border-white/50 relative overflow-hidden">
         <div className="container mx-auto flex justify-between items-center py-3 px-6">
           <Link to="/" className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-full bg-button-gradient flex items-center justify-center text-white font-bold text-lg shadow-clay-button">
+            <div className="h-12 w-12 rounded-full bg-gremio-primary flex items-center justify-center text-white font-bold text-lg">
               GE
             </div>
             <div>
@@ -22,7 +22,7 @@ const Navbar = () => {
 
           {/* Mobile menu button */}
           <button 
-            className="md:hidden bg-button-gradient text-white p-3 rounded-full shadow-clay-button" 
+            className="md:hidden bg-gremio-primary text-white p-3 rounded-full shadow-clay-button" 
             onClick={() => setIsOpen(!isOpen)}
           >
             <svg 
@@ -45,7 +45,7 @@ const Navbar = () => {
           </button>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-4">
+          <nav className="hidden md:flex items-center gap-2">
             <NavLink to="/" isActive={location.pathname === "/"}>Início</NavLink>
             <NavLink to="/equipe" isActive={location.pathname === "/equipe"}>Equipe</NavLink>
             <NavLink to="/projetos" isActive={location.pathname === "/projetos"}>Projetos</NavLink>
@@ -53,7 +53,7 @@ const Navbar = () => {
             <NavLink to="/contato" isActive={location.pathname === "/contato"}>Contato</NavLink>
             
             {/* Theme toggle */}
-            <button className="clay-icon w-10 h-10 text-gremio-tertiary ml-2">
+            <button className="clay-icon w-10 h-10 text-gray-500 ml-2 rounded-full flex items-center justify-center bg-white shadow-clay-sm">
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
                 width="18" 
@@ -80,7 +80,7 @@ const Navbar = () => {
         </div>
         
         {/* Purple gradient line */}
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-button-gradient"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gremio-primary to-gremio-light"></div>
       </div>
 
       {/* Mobile Navigation */}
@@ -108,8 +108,8 @@ const NavLink = ({ to, children, isActive }: NavLinkProps) => (
     to={to} 
     className={`px-5 py-2 rounded-full font-medium transition-all duration-300 relative ${
       isActive 
-        ? "bg-white text-gremio-primary shadow-clay-inner" 
-        : "text-foreground hover:text-gremio-primary"
+        ? "bg-purple-100/80 text-gremio-primary shadow-clay-inner" 
+        : "text-gray-500 hover:text-gremio-primary"
     }`}
   >
     {children}

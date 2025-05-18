@@ -41,7 +41,7 @@
   }
 
   body {
-    @apply bg-gremio-gray text-foreground font-sans overflow-x-hidden;
+    @apply bg-gradient-to-br from-[#f4efff] to-[#e0e8ff] text-foreground font-sans overflow-x-hidden min-h-screen;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -54,28 +54,29 @@
     @apply bg-card-pastel rounded-clay p-6 shadow-clay relative overflow-hidden transition-all duration-300;
   }
   
-  .clay-button {
-    @apply bg-button-gradient text-white rounded-full px-6 py-3 shadow-clay-button hover:shadow-clay-sm transition-all duration-300 hover:translate-y-[1px] active:shadow-clay-pressed active:translate-y-[2px];
+  .nav-item-active {
+    @apply bg-purple-100/80 text-gremio-primary shadow-clay-inner;
+  }
+
+  .primary-button {
+    @apply bg-gremio-primary text-white rounded-full px-8 py-4 shadow-clay-sm flex items-center justify-center gap-2 
+    hover:shadow-clay transition-all duration-300 hover:bg-gremio-primary/90;
   }
   
-  .clay-input {
-    @apply bg-white rounded-full px-4 py-3 shadow-clay-inner focus:outline-none focus:ring-2 focus:ring-gremio-primary/30 w-full transition-all duration-200;
+  .secondary-button {
+    @apply bg-white text-gremio-primary rounded-full px-8 py-4 shadow-clay-sm flex items-center justify-center gap-2 
+    hover:shadow-clay transition-all duration-300;
   }
   
-  .clay-icon {
-    @apply rounded-full p-3 bg-card-pastel shadow-clay-sm flex items-center justify-center;
+  .hero-text {
+    @apply text-center mx-auto max-w-4xl;
   }
-  
-  .clay-pill {
-    @apply inline-flex items-center rounded-full px-4 py-1 text-sm font-medium bg-white shadow-clay-sm;
+
+  .hero-section {
+    @apply rounded-3xl bg-gradient-to-br from-[#f0e9ff] to-[#e5efff] p-16 shadow-clay my-8 mx-auto;
   }
   
   .clay-blob {
     @apply absolute rounded-full blur-3xl opacity-20;
-  }
-
-  /* Menu specific claymorphism styles */
-  .nav-item-active {
-    @apply bg-white text-gremio-primary shadow-clay-inner;
   }
 }

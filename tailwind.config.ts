@@ -55,7 +55,7 @@ export default {
 				},
 				// Custom colors for our claymorphic UI
 				gremio: {
-					'primary': '#9b87f5',
+					'primary': '#8464fb',
 					'secondary': '#7E69AB',
 					'tertiary': '#6E59A5',
 					'light': '#D6BCFA',
@@ -65,6 +65,9 @@ export default {
 					'mint': '#C7F9CC',
 					'gray': '#F1F0FB',
 				},
+				purple: {
+					100: '#f0e9ff',
+				}
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
