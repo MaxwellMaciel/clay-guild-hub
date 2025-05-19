@@ -25,7 +25,7 @@ const itemVariants = {
   }
 };
 
-const Team = () => {
+export default function Team() {
   const [membros, setMembros] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filtroComissao, setFiltroComissao] = useState("todas");
@@ -201,7 +201,7 @@ const Team = () => {
         {/* Estado de carregamento */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {Array(8).fill().map((_, i) => (
+            {Array(8).fill(0).map((_, i) => (
               <motion.div 
                 key={i} 
                 className="clay-card p-6 animate-pulse"
@@ -365,13 +365,13 @@ const Team = () => {
       </AnimatePresence>
     </>
   );
-};
+}
 
-function MembroCard({ membro, onClick }) {
+function MembroCard({ membro, onClick }: { membro: any; onClick: () => void }) {
   return (
     <motion.div 
       className="clay-card bg-[var(--clay-bg)] hover:shadow-lg transition-all duration-300 cursor-pointer group"
-      onClick={() => onClick(membro.id)}
+      onClick={onClick}
       whileHover={{ y: -5 }}
       style={{ color: 'var(--text-default)' }}
     >

@@ -1,292 +1,406 @@
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Noticia } from "@/entities/Noticia";
+import { Calendar, Search, Star, AlertCircle, Info, X, ChevronRight, FileText, ArrowRight, Clock, User, Tag, ArrowUp, BookOpen } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
-// Sample news data
-const newsData = [
-  {
-    id: 1,
-    title: "Início do Projeto Horta Comunitária",
-    date: "14 de maio de 2023",
-    content: "É com grande alegria que anunciamos o início do Projeto Horta Comunitária da nossa escola! As atividades começaram com a preparação do terreno no espaço entre os blocos A e B. Nesta primeira fase, contaremos com o plantio de alface, cenoura, tomate e ervas aromáticas. Alunos de todas as séries podem participar do projeto, que terá atividades às terças e quintas-feiras durante o intervalo. O projeto visa promover a educação ambiental, alimentação saudável e o trabalho em equipe. Os alimentos produzidos serão utilizados na merenda escolar e o excedente será doado para a comunidade local. Agradecemos à direção pelo apoio e aos voluntários que já se inscreveram!",
-    featured: false,
-    highlighted: true,
-  },
-  {
-    id: 2,
-    title: "Arrecadação de Agasalhos - Campanha Solidária",
-    date: "09 de maio de 2023",
-    content: "O Grêmio Estudantil está organizando uma campanha de arrecadação de agasalhos para ajudar pessoas em situação de vulnerabilidade durante o inverno. Estamos coletando casacos, blusas, cobertores, meias e outros itens que possam aquecer quem precisa. Pontos de coleta foram distribuídos em cada sala de aula e na entrada da escola. A campanha vai até 09 de junho e todos podem participar doando itens em bom estado de conservação. Os agasalhos arrecadados serão entregues para duas instituições de caridade da nossa região. Sua solidariedade pode fazer a diferença na vida de muitas pessoas neste inverno. Participe!",
-    featured: true,
-    highlighted: true,
-  },
-  {
-    id: 3,
-    title: "Resultado do Campeonato Interclasses",
-    date: "01 de maio de 2023",
-    content: "O Campeonato Interclasses 2023 foi um sucesso! Após semanas de competições acirradas, temos os vencedores: Futsal: 3º ano A; Vôlei: 2º ano C; Basquete: 3º ano B; Xadrez: 1º ano D. Parabéns a todos os participantes pelo espírito esportivo e dedicação! Agradecemos aos professores de educação física pelo apoio e arbitragem, e a todos que torceram e prestigiaram os jogos. O prêmio para as turmas vencedoras será um passeio ao parque aquático, a ser realizado no final do semestre. Fiquem atentos para mais informações sobre as fotos oficiais e a cerimônia de premiação que acontecerá na próxima semana.",
-    featured: false,
-    highlighted: false,
-  },
-  {
-    id: 4,
-    title: "Eleições para o Grêmio Estudantil 2023",
-    date: "24 de janeiro de 2023",
-    content: "As inscrições para as chapas que concorrerão ao Grêmio Estudantil 2023 estão abertas! Todos os alunos regularmente matriculados podem participar formando chapas com pelo menos 8 integrantes, incluindo: presidente, vice-presidente, secretário geral, tesoureiro e coordenadores de departamentos. Para se inscrever, as chapas devem apresentar um plano de ação com propostas para o ano letivo e a ficha de inscrição completa até o dia 10 de fevereiro. A campanha eleitoral ocorrerá entre 13 e 24 de fevereiro, com o debate entre as chapas no dia 22/02. A votação será realizada no dia 28 de fevereiro, com urnas eletrônicas cedidas pelo TRE. Participe deste importante processo democrático na nossa escola!",
-    featured: true,
-    highlighted: false,
-  },
-  {
-    id: 5,
-    title: "Workshop de Orientação Profissional",
-    date: "15 de abril de 2023",
-    content: "Na próxima quinta-feira, dia 20 de abril, o Grêmio Estudantil em parceria com a coordenação pedagógica realizará um Workshop de Orientação Profissional direcionado aos alunos do ensino médio. O evento acontecerá no auditório da escola, das 14h às 17h, e contará com a participação de profissionais de diversas áreas que compartilharão suas experiências e trajetórias. Haverá também a aplicação de testes vocacionais e orientações sobre universidades, vestibulares e ENEM. As inscrições podem ser feitas pelo formulário online disponível nas redes sociais do grêmio ou diretamente com os representantes de classe. Vagas limitadas!",
-    featured: false,
-    highlighted: false,
+const NOTICIAS_POR_PAGINA = 5; // Exibir 5 notícias inicialmente + 1 destaque
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    }
   }
-];
+};
 
-const News = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [onlyHighlights, setOnlyHighlights] = useState(false);
+const itemVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  show: { 
+    opacity: 1, 
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 15,
+    }
+  }
+};
 
-  const filteredNews = newsData
-    .filter(news => 
-      news.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      news.content.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-    .filter(news => !onlyHighlights || news.highlighted);
+export default function News() {
+  const [noticiasTodas, setNoticiasTodas] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [busca, setBusca] = useState("");
+  const [filtroDestaque, setFiltroDestaque] = useState(false);
+  const [noticiaExpandida, setNoticiaExpandida] = useState<any>(null);
+  const [noticiasVisiveis, setNoticiasVisiveis] = useState(NOTICIAS_POR_PAGINA);
 
-  const featuredNews = filteredNews.filter(news => news.featured);
-  const regularNews = filteredNews.filter(news => !news.featured);
+  useEffect(() => {
+    async function carregarNoticias() {
+      try {
+        const dados = await Noticia.list("-data"); // Ordena por data mais recente
+        setNoticiasTodas(dados);
+      } catch (error) {
+        console.error("Erro ao carregar notícias:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    carregarNoticias();
+  }, []);
+
+  const noticiasFiltradas = noticiasTodas.filter(noticia => {
+    const matchBusca = busca === "" || 
+      noticia.titulo.toLowerCase().includes(busca.toLowerCase()) ||
+      (noticia.conteudo && noticia.conteudo.toLowerCase().includes(busca.toLowerCase()));
+    
+    const matchDestaque = !filtroDestaque || noticia.destaque;
+    
+    return matchBusca && matchDestaque;
+  });
+
+  const noticiaDestaquePrincipal = noticiasFiltradas.find(n => n.destaque && n.imagem) || noticiasFiltradas.find(n => n.imagem) || noticiasFiltradas[0];
+  
+  const outrasNoticias = noticiasFiltradas.filter(n => n.id !== (noticiaDestaquePrincipal?.id || 0));
+
+  const carregarMaisNoticias = () => {
+    setNoticiasVisiveis(prev => prev + NOTICIAS_POR_PAGINA);
+  };
 
   return (
-    <main className="py-12 px-4 bg-gremio-gray">
-      <div className="container mx-auto">
-        {/* News Header */}
-        <div className="clay-card mb-12 bg-white">
-          <h1 className="text-3xl md:text-4xl font-bold text-gremio-primary text-center mb-6">
+    <div className="max-w-7xl mx-auto">
+      {/* Hero Section */}
+      <motion.div 
+        className="clay-card p-8 md:p-12 bg-gradient-to-br from-[var(--accent-bg)] to-[var(--page-bg-end)] text-center mb-12 relative overflow-hidden"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        {/* Círculos decorativos */}
+        <div className="absolute -top-20 -left-20 w-72 h-72 bg-[var(--primary-color)] opacity-10 dark:opacity-20 rounded-full filter blur-2xl"></div>
+        <div className="absolute -bottom-20 -right-20 w-72 h-72 bg-[var(--secondary-color)] opacity-10 dark:opacity-20 rounded-full filter blur-2xl"></div>
+        
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+          className="relative z-10"
+        >
+          <h1 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: 'var(--text-headings)' }}>
             Notícias e Avisos
           </h1>
-          <p className="text-center text-lg max-w-3xl mx-auto">
-            Acompanhe as últimas novidades, eventos e comunicados do Grêmio Estudantil e fique por dentro de tudo que acontece em nossa escola.
+          <p className="text-lg text-[var(--text-default)] max-w-3xl mx-auto">
+            Acompanhe as últimas novidades, eventos e comunicados do Grêmio Estudantil
+            e fique por dentro de tudo que acontece em nossa escola.
           </p>
-        </div>
-
-        {/* Search and Filters */}
-        <div className="clay-card mb-10 bg-white">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-foreground/60"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.3-4.3" />
-              </svg>
-              <input
-                type="text"
-                className="clay-input pl-10"
-                placeholder="Buscar notícias..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                className={`rounded-full p-2 ${onlyHighlights ? 'bg-gremio-primary text-white' : 'bg-white text-foreground/60'}`}
-                onClick={() => setOnlyHighlights(!onlyHighlights)}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                </svg>
-              </button>
-              <span className="text-sm text-foreground/60">
-                Apenas Destaques
-              </span>
-            </div>
+        </motion.div>
+      </motion.div>
+      
+      {/* Filtros e Busca */}
+      <motion.div 
+        className="flex flex-col md:flex-row gap-4 mb-10 items-center sticky top-[calc(var(--header-height,80px)+1rem)] z-30 clay-card p-4 md:p-6"
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+      >
+        <div className="relative flex-grow w-full md:w-auto">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Search size={18} className="text-[var(--text-muted)]" />
           </div>
+          <input
+            type="text"
+            placeholder="Buscar notícias..."
+            className="clay-input w-full py-2.5 pl-10 pr-4 focus:outline-none text-[var(--text-default)]"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+          />
         </div>
-
-        {/* Featured News */}
-        {featuredNews.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            {featuredNews.map((news) => (
-              <FeaturedNewsCard
-                key={news.id}
-                title={news.title}
-                date={news.date}
-                content={news.content}
-                isHighlighted={news.highlighted}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Regular News */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {regularNews.map((news) => (
-            <NewsCard
-              key={news.id}
-              title={news.title}
-              date={news.date}
-              content={news.content}
-              isHighlighted={news.highlighted}
-            />
-          ))}
-        </div>
-
-        {filteredNews.length === 0 && (
-          <div className="clay-card bg-white text-center py-12">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="48"
-              height="48"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="mx-auto mb-4 text-foreground/30"
-            >
-              <circle cx="11" cy="11" r="8" />
-              <path d="m21 21-4.3-4.3" />
-              <line x1="8" y1="11" x2="14" y2="11" />
-            </svg>
-            <h3 className="text-xl font-medium text-foreground/70 mb-2">Nenhuma notícia encontrada</h3>
-            <p className="text-foreground/60">
-              Tente ajustar sua busca ou filtros para encontrar o que procura.
-            </p>
-          </div>
-        )}
-      </div>
-    </main>
-  );
-};
-
-type NewsCardProps = {
-  title: string;
-  date: string;
-  content: string;
-  isHighlighted?: boolean;
-};
-
-const NewsCard = ({ title, date, content, isHighlighted = false }: NewsCardProps) => {
-  // Create a shortened version of the content
-  const shortContent = content.length > 120 ? content.substring(0, 120) + "..." : content;
-
-  return (
-    <div className={`clay-card hover:shadow-clay-lg hover:-translate-y-1 transition-all duration-300 ${isHighlighted ? 'border-l-4 border-yellow-400' : ''}`}>
-      <div className="h-12 w-12 mb-6 rounded-full bg-gremio-soft flex items-center justify-center text-gremio-primary">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+        
+        <button
+          className={`clay-button px-4 py-2.5 flex items-center gap-2 w-full md:w-auto justify-center ${
+            filtroDestaque ? "clay-pressed text-[var(--primary-color)]" : "text-[var(--text-muted)]"
+          }`}
+          onClick={() => setFiltroDestaque(!filtroDestaque)}
         >
-          <path d="m3 15 5.12-5.12A3 3 0 0 1 10.24 9H13a2 2 0 1 1 0 4h-2.5m4-.68 4.17-4.89a1.88 1.88 0 0 1 2.92 2.36l-4.2 4.6a2.13 2.13 0 0 1-3 .29L7 10" />
-          <path d="m2 12 8 8 2-2-6-6Z" />
-        </svg>
-      </div>
-      {isHighlighted && (
-        <div className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-medium mb-3">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="12"
-            height="12"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-          </svg>
-          Destaque
+          <Star size={18} className={filtroDestaque ? "text-[var(--primary-color)] fill-[var(--primary-color)]" : ""} />
+          Apenas Destaques
+        </button>
+      </motion.div>
+      
+      {/* Conteúdo das Notícias */}
+      {loading ? (
+        <LoadingSkeleton />
+      ) : noticiasFiltradas.length === 0 ? (
+        <motion.div 
+          className="clay-card p-8 text-center text-[var(--text-muted)]"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Info size={48} className="mx-auto mb-4 text-[var(--text-muted)]" />
+          <p>
+            {busca 
+              ? `Nenhuma notícia encontrada para "${busca}".` 
+              : filtroDestaque 
+                ? "Não há notícias em destaque no momento."
+                : "Nenhuma notícia publicada ainda."}
+          </p>
+        </motion.div>
+      ) : (
+        <div className="space-y-12">
+          {/* Notícia de Destaque Principal (se houver) */}
+          {noticiaDestaquePrincipal && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <NoticiaCardDestaque 
+                noticia={noticiaDestaquePrincipal} 
+                onExpand={() => setNoticiaExpandida(noticiaDestaquePrincipal)} 
+              />
+            </motion.div>
+          )}
+
+          {/* Outras Notícias em Grid */}
+          {outrasNoticias.length > 0 && (
+            <motion.div 
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+              variants={containerVariants}
+              initial="hidden"
+              animate="show"
+            >
+              <AnimatePresence>
+                {outrasNoticias.slice(0, noticiasVisiveis).map((noticia) => (
+                  <motion.div
+                    key={noticia.id}
+                    variants={itemVariants}
+                  >
+                    <NoticiaCard 
+                      noticia={noticia} 
+                      onExpand={() => setNoticiaExpandida(noticia)} 
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          )}
+
+          {/* Botão Carregar Mais */}
+          {outrasNoticias.length > noticiasVisiveis && (
+            <motion.div 
+              className="text-center mt-12"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+            >
+              <button
+                className="clay-button px-6 py-3 font-semibold flex items-center gap-2 mx-auto"
+                style={{ backgroundColor: 'var(--primary-color)', color: 'var(--text-on-primary-bg)' }}
+                onClick={carregarMaisNoticias}
+              >
+                Carregar Mais Notícias
+                <ChevronRight size={18} />
+              </button>
+            </motion.div>
+          )}
         </div>
       )}
-      <h3 className="text-xl font-bold text-gremio-primary mb-2">{title}</h3>
-      <time className="text-sm text-foreground/60 mb-3 block">{date}</time>
-      <p className="text-foreground/80 mb-4">{shortContent}</p>
-      <button className="text-gremio-primary hover:underline flex items-center gap-1 text-sm font-medium">
-        Ler mais
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M5 12h14" />
-          <path d="m12 5 7 7-7 7" />
-        </svg>
-      </button>
+      
+      {/* Modal de notícia expandida */}
+      <AnimatePresence>
+        {noticiaExpandida && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-70 z-[100] flex items-center justify-center p-4" 
+            onClick={() => setNoticiaExpandida(null)}
+          >
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="clay-card bg-[var(--clay-bg)] max-w-3xl w-full max-h-[90vh] flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="sticky top-0 z-10 bg-[var(--clay-bg)]/80 backdrop-blur-sm p-5 border-b border-[var(--accent-color)]/30 flex justify-between items-center rounded-t-2xl">
+                <h2 className="text-xl md:text-2xl font-bold text-[var(--text-headings)] flex items-center gap-2">
+                  {noticiaExpandida.destaque && (
+                    <Star size={20} className="text-[var(--primary-color)] fill-[var(--primary-color)]/50" />
+                  )}
+                  {noticiaExpandida.titulo}
+                </h2>
+                <button 
+                  className="clay-button p-2 text-[var(--text-muted)] hover:text-[var(--primary-color)]" 
+                  onClick={() => setNoticiaExpandida(null)}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="p-6 overflow-y-auto">
+                <p className="text-sm text-[var(--text-muted)] mb-4 flex items-center">
+                  <Calendar size={14} className="mr-1.5 text-[var(--primary-color)]" />
+                  {new Date(noticiaExpandida.data).toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' })}
+                  {noticiaExpandida.autor && (
+                    <span className="ml-3 pl-3 border-l border-[var(--accent-color)]/30">
+                      Por: <span className="font-medium text-[var(--text-default)]">{noticiaExpandida.autor}</span>
+                    </span>
+                  )}
+                </p>
+                
+                {noticiaExpandida.imagem && (
+                  <div className="mb-6 aspect-video rounded-xl overflow-hidden clay-card shadow-inner">
+                    <img 
+                      src={noticiaExpandida.imagem} 
+                      alt={noticiaExpandida.titulo} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                
+                <div className="prose max-w-none text-[var(--text-default)] leading-relaxed">
+                  {noticiaExpandida.conteudo.split('\n').map((paragraph: string, i: number) => (
+                    paragraph.trim() !== "" && <p key={i} className="mb-4">{paragraph}</p>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
-};
+}
 
-const FeaturedNewsCard = ({ title, date, content, isHighlighted = false }: NewsCardProps) => {
-  // Create a shortened version of the content but longer for featured cards
-  const shortContent = content.length > 180 ? content.substring(0, 180) + "..." : content;
-
+// Card para Notícia de Destaque Principal
+function NoticiaCardDestaque({ noticia, onExpand }: { noticia: any, onExpand: () => void }) {
   return (
-    <div className={`clay-card hover:shadow-clay-lg transition-all duration-300 ${isHighlighted ? 'border-l-4 border-yellow-400' : ''}`}>
-      <div className="flex items-center gap-2 mb-4">
-        <div className="h-12 w-12 rounded-full bg-gremio-primary flex items-center justify-center text-white">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-          </svg>
-        </div>
-        <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gremio-primary/10 text-gremio-primary text-sm font-medium">
-          Notícia em Destaque
+    <div 
+      className="clay-card bg-[var(--clay-bg)] hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer group"
+      onClick={onExpand}
+    >
+      <div className="md:flex">
+        {noticia.imagem && (
+          <div className="md:w-1/2 xl:w-3/5">
+            <div className="aspect-video md:aspect-auto md:h-full overflow-hidden">
+              <img 
+                src={noticia.imagem} 
+                alt={noticia.titulo} 
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+          </div>
+        )}
+        <div className={`p-6 md:p-8 flex flex-col justify-center ${noticia.imagem ? 'md:w-1/2 xl:w-2/5' : 'w-full'}`}>
+          {noticia.destaque && (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold mb-3 w-fit" 
+                  style={{ backgroundColor: 'var(--accent-bg)', color: 'var(--primary-color)' }}>
+              <Star size={14} className="fill-[var(--primary-color)]/50" /> Destaque
+            </span>
+          )}
+          <h2 className="text-2xl lg:text-3xl font-bold text-[var(--text-headings)] mb-3 group-hover:text-[var(--primary-color)] transition-colors">
+            {noticia.titulo}
+          </h2>
+          <p className="text-sm text-[var(--text-muted)] mb-4 flex items-center">
+            <Calendar size={14} className="mr-1.5 text-[var(--primary-color)]" />
+            {new Date(noticia.data).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
+          </p>
+          <p className="text-[var(--text-default)] line-clamp-4 mb-6 leading-relaxed">
+            {noticia.conteudo}
+          </p>
+          <button className="clay-button text-[var(--primary-color)] font-medium py-2 px-4 rounded-lg w-fit group-hover:bg-[var(--accent-bg)] transition-colors flex items-center gap-2">
+            Ler mais
+            <ArrowRight size={16} />
+          </button>
         </div>
       </div>
-      <h3 className="text-2xl font-bold text-gremio-primary mb-2">{title}</h3>
-      <time className="text-sm text-foreground/60 mb-4 block">{date}</time>
-      <p className="text-foreground/80 mb-4">{shortContent}</p>
-      <button className="clay-button text-sm">
-        Ler notícia completa
-      </button>
     </div>
   );
-};
+}
 
-export default News;
+// Card para Notícias Menores
+function NoticiaCard({ noticia, onExpand }: { noticia: any, onExpand: () => void }) {
+  return (
+    <div 
+      className="clay-card bg-[var(--clay-bg)] h-full flex flex-col overflow-hidden cursor-pointer group hover:shadow-lg transition-all duration-300"
+      onClick={onExpand}
+    >
+      {noticia.imagem ? (
+        <div className="aspect-video overflow-hidden">
+          <img 
+            src={noticia.imagem} 
+            alt={noticia.titulo} 
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        </div>
+      ) : (
+        <div className="aspect-video bg-gradient-to-br from-[var(--accent-bg)] to-[var(--page-bg-end)] flex items-center justify-center">
+          <FileText size={48} className="text-[var(--primary-color)] opacity-30" />
+        </div>
+      )}
+      <div className="p-5 flex flex-col flex-grow">
+        {noticia.destaque && (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold mb-2 w-fit"
+                style={{ backgroundColor: 'var(--accent-bg)', color: 'var(--primary-color)' }}>
+            <Star size={12} className="fill-[var(--primary-color)]/50" /> Destaque
+          </span>
+        )}
+        <h3 className="text-lg font-bold text-[var(--text-headings)] mb-2 group-hover:text-[var(--primary-color)] transition-colors">
+          {noticia.titulo}
+        </h3>
+        <p className="text-xs text-[var(--text-muted)] mb-3 flex items-center">
+          <Calendar size={12} className="mr-1 text-[var(--primary-color)]" />
+          {new Date(noticia.data).toLocaleDateString('pt-BR')}
+        </p>
+        <p className="text-sm text-[var(--text-default)] line-clamp-3 flex-grow mb-4">
+          {noticia.conteudo}
+        </p>
+        <button className="text-sm text-[var(--primary-color)] font-medium mt-auto self-start flex items-center gap-1 group-hover:underline">
+          Ler mais
+          <ArrowRight size={14} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="space-y-12">
+      {/* Skeleton para Destaque Principal */}
+      <div className="clay-card bg-[var(--clay-bg)] p-6 animate-pulse">
+        <div className="md:flex">
+          <div className="md:w-1/2 xl:w-3/5 aspect-video md:aspect-auto bg-[var(--accent-bg)] rounded-lg"></div>
+          <div className="md:w-1/2 xl:w-2/5 p-6 md:p-8 space-y-4">
+            <div className="h-5 bg-[var(--accent-bg)] rounded w-1/4"></div>
+            <div className="h-8 bg-[var(--accent-bg)] rounded w-3/4"></div>
+            <div className="h-4 bg-[var(--accent-bg)] rounded w-1/3"></div>
+            <div className="h-4 bg-[var(--accent-bg)] rounded"></div>
+            <div className="h-4 bg-[var(--accent-bg)] rounded"></div>
+            <div className="h-10 bg-[var(--accent-bg)] rounded w-1/3"></div>
+          </div>
+        </div>
+      </div>
+      {/* Skeleton para Grid de Notícias */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {Array(3).fill(0).map((_, i) => (
+          <div key={i} className="clay-card bg-[var(--clay-bg)] p-5 animate-pulse space-y-4">
+            <div className="aspect-video bg-[var(--accent-bg)] rounded-lg"></div>
+            <div className="h-5 bg-[var(--accent-bg)] rounded w-3/4"></div>
+            <div className="h-3 bg-[var(--accent-bg)] rounded w-1/2"></div>
+            <div className="h-3 bg-[var(--accent-bg)] rounded"></div>
+            <div className="h-3 bg-[var(--accent-bg)] rounded"></div>
+            <div className="h-4 bg-[var(--accent-bg)] rounded w-1/4 mt-2"></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

@@ -32,7 +32,7 @@ const itemVariants = {
 };
 
 
-const STATUS_INFO = {
+const STATUS_INFO: Record<string, { label: string, Icon: any, colorClass: string, borderColor: string }> = {
   planejado: { label: "Planejado", Icon: Lightbulb, colorClass: "bg-yellow-100 text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-300", borderColor: "border-yellow-300 dark:border-yellow-500" },
   em_andamento: { label: "Em Andamento", Icon: CircleEllipsis, colorClass: "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300", borderColor: "border-blue-300 dark:border-blue-500" },
   concluido: { label: "Concluído", Icon: CheckCircle2, colorClass: "bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300", borderColor: "border-green-300 dark:border-green-500" },
@@ -40,12 +40,12 @@ const STATUS_INFO = {
 };
 
 export default function Projects() {
-  const [projetos, setProjetos] = useState([]);
+  const [projetos, setProjetos] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filtroStatus, setFiltroStatus] = useState("todos");
   const [ordem, setOrdem] = useState("recentes");
   const [busca, setBusca] = useState("");
-  const [projetoExpandido, setProjetoExpandido] = useState(null);
+  const [projetoExpandido, setProjetoExpandido] = useState<string | null>(null);
 
   useEffect(() => {
     async function carregarProjetos() {
@@ -71,24 +71,24 @@ export default function Projects() {
   });
 
   const projetosOrdenados = [...projetosFiltrados].sort((a, b) => {
-    const dateA = a.data_inicio || a.created_date;
-    const dateB = b.data_inicio || b.created_date;
+    const dateA = new Date(a.data_inicio || a.created_date || "");
+    const dateB = new Date(b.data_inicio || b.created_date || "");
     if (ordem === "recentes") {
-      return new Date(dateB) - new Date(dateA);
+      return dateB.getTime() - dateA.getTime();
     } else if (ordem === "antigos") {
-      return new Date(dateA) - new Date(dateB);
+      return dateA.getTime() - dateB.getTime();
     }
     return 0;
   });
 
-    // Função auxiliar para renderizar o ícone de status
-    const renderStatusIcon = (status, size = 14) => {
-      const statusInfo = STATUS_INFO[status];
-      if (!statusInfo) return null;
-      
-      const IconComponent = statusInfo.Icon;
-      return <IconComponent size={size} />;
-    };
+  // Função auxiliar para renderizar o ícone de status
+  const renderStatusIcon = (status: string, size = 14) => {
+    const statusInfo = STATUS_INFO[status];
+    if (!statusInfo) return null;
+    
+    const IconComponent = statusInfo.Icon;
+    return <IconComponent size={size} />;
+  };
 
   return (
     <>
@@ -180,7 +180,7 @@ export default function Projects() {
         {/* Lista de Projetos */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {Array(4).fill().map((_, i) => <ProjetoCardSkeleton key={i} />)}
+            {Array(4).fill(0).map((_, i) => <ProjetoCardSkeleton key={i} />)}
           </div>
         ) : projetosOrdenados.length === 0 ? (
           <div className="clay-card p-8 text-center text-[var(--text-muted)]">
@@ -203,7 +203,7 @@ export default function Projects() {
           >
             {projetosOrdenados.map((projeto) => (
               <motion.div key={projeto.id} variants={itemVariants}>
-                <ProjetoCard projeto={projeto} onExpand={(id) => setProjetoExpandido(id)} />
+                <ProjetoCard projeto={projeto} onExpand={() => setProjetoExpandido(projeto.id)} />
               </motion.div>
             ))}
           </motion.div>
@@ -232,9 +232,9 @@ export default function Projects() {
                   <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-headings)] mb-1">
                     {projetos.find(p => p.id === projetoExpandido)?.titulo}
                   </h2>
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${STATUS_INFO[projetos.find(p => p.id === projetoExpandido)?.status]?.colorClass}`}>
-                    {renderStatusIcon(projetos.find(p => p.id === projetoExpandido)?.status)}
-                    {STATUS_INFO[projetos.find(p => p.id === projetoExpandido)?.status]?.label}
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${STATUS_INFO[projetos.find(p => p.id === projetoExpandido)?.status || ""]?.colorClass}`}>
+                    {renderStatusIcon(projetos.find(p => p.id === projetoExpandido)?.status || "")}
+                    {STATUS_INFO[projetos.find(p => p.id === projetoExpandido)?.status || ""]?.label}
                   </span>
                 </div>
                 <button 
@@ -286,7 +286,7 @@ export default function Projects() {
                   <div>
                     <h3 className="text-lg font-semibold text-[var(--text-headings)] mb-2">Equipe Responsável</h3>
                     <div className="flex flex-wrap gap-2">
-                      {projetos.find(p => p.id === projetoExpandido)?.responsaveis.map((resp, idx) => (
+                      {projetos.find(p => p.id === projetoExpandido)?.responsaveis.map((resp: string, idx: number) => (
                         <span key={idx} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--accent-bg)]/80 text-[var(--text-default)]">
                           <User size={14} className="text-[var(--primary-color)]" />
                           {resp}
@@ -304,7 +304,15 @@ export default function Projects() {
   );
 }
 
-function StatusButton({ status, atual, onClick, icon, label }) {
+interface StatusButtonProps {
+  status: string;
+  atual: string;
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+}
+
+function StatusButton({ status, atual, onClick, icon, label }: StatusButtonProps) {
   const isActive = status === atual;
   const { colorClass, borderColor } = STATUS_INFO[status] || {};
   
@@ -320,14 +328,24 @@ function StatusButton({ status, atual, onClick, icon, label }) {
   );
 }
 
-function ProjetoCard({ projeto, onExpand }) {
+interface ProjetoCardProps {
+  projeto: any;
+  onExpand: (id: string) => void;
+}
+
+function ProjetoCard({ projeto, onExpand }: ProjetoCardProps) {
   const { label, Icon, colorClass } = STATUS_INFO[projeto.status] || {};
+
+  let accentColor = '';
+  if (projeto.status === 'planejado') accentColor = 'var(--yellow-500)';
+  else if (projeto.status === 'em_andamento') accentColor = 'var(--blue-500)';
+  else if (projeto.status === 'concluido') accentColor = 'var(--green-500)';
 
   return (
     <div 
       className="clay-card bg-[var(--clay-bg)] h-full flex flex-col overflow-hidden group cursor-pointer hover:shadow-lg"
       onClick={() => onExpand(projeto.id)}
-      style={{'--card-accent-color': `var(--${projeto.status === 'planejado' ? 'yellow' : projeto.status === 'em_andamento' ? 'blue' : 'green'}-500)`}}
+      style={{ "--card-accent-color": accentColor } as React.CSSProperties}
     >
       {projeto.imagem ? (
         <div className="aspect-video overflow-hidden relative">
