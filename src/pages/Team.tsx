@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Membro } from "@/entities/Membro";
 import { Filter, ChevronDown, Users, Mail, Phone, MapPin, ArrowRight, Star, Rocket, Award } from "lucide-react";
@@ -372,7 +371,7 @@ function MembroCard({ membro, onClick }) {
   return (
     <motion.div 
       className="clay-card bg-[var(--clay-bg)] hover:shadow-lg transition-all duration-300 cursor-pointer group"
-      onClick={onClick}
+      onClick={() => onClick(membro.id)}
       whileHover={{ y: -5 }}
       style={{ color: 'var(--text-default)' }}
     >

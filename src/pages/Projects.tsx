@@ -1,314 +1,397 @@
 
-import { useState } from "react";
-import { ArrowRight } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Projeto } from "@/entities/Projeto";
+import { Calendar, Clock, User, Tag, ArrowDown, ArrowUp, CheckCircle2, CircleDashed, CircleEllipsis, Users, Lightbulb, Filter, ChevronDown, Search, ExternalLink, X, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
-const Projects = () => {
-  const [filter, setFilter] = useState("Todos");
-  const [sort, setSort] = useState("recentes");
-
-  return (
-    <main className="py-12 px-4 bg-gremio-gray">
-      <div className="container mx-auto">
-        {/* Projects Header */}
-        <div className="clay-card mb-12 bg-white">
-          <h1 className="text-3xl md:text-4xl font-bold text-gremio-primary text-center mb-6">
-            Nossos Projetos
-          </h1>
-          <p className="text-center text-lg max-w-3xl mx-auto">
-            Conheça as iniciativas e projetos desenvolvidos pelo Grêmio Estudantil para melhorar nossa escola e enriquecer a experiência de todos os alunos.
-          </p>
-        </div>
-
-        {/* Projects Filters */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-          <div className="flex flex-wrap gap-2">
-            <FilterButton 
-              active={filter === "Todos"} 
-              onClick={() => setFilter("Todos")}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M9.5 7 9 6.5" />
-                <path d="m16 18-9-9" />
-                <path d="M17 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z" />
-                <path d="M17 10.055v-2.019l-9-4.012" />
-                <path d="M12 8.055v-2.019l-9-4.012" />
-                <path d="M7 17a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z" />
-                <path d="M7 6a2 2 0 1 1 4 0 2 2 0 0 1-4 0Z" />
-              </svg>
-              Todos
-            </FilterButton>
-            <FilterButton 
-              active={filter === "Planejados"} 
-              onClick={() => setFilter("Planejados")}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <path d="m16 10-4 4-2-2" />
-              </svg>
-              Planejados
-            </FilterButton>
-            <FilterButton 
-              active={filter === "Em Andamento"} 
-              onClick={() => setFilter("Em Andamento")}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2v4" />
-                <path d="M12 18v4" />
-                <path d="M4.93 4.93l2.83 2.83" />
-                <path d="M16.24 16.24l2.83 2.83" />
-                <path d="M2 12h4" />
-                <path d="M18 12h4" />
-                <path d="M4.93 19.07l2.83-2.83" />
-                <path d="M16.24 7.76l2.83-2.83" />
-              </svg>
-              Em Andamento
-            </FilterButton>
-            <FilterButton 
-              active={filter === "Concluídos"} 
-              onClick={() => setFilter("Concluídos")}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M8 12h8" />
-              </svg>
-              Concluídos
-            </FilterButton>
-          </div>
-
-          <div className="flex gap-4">
-            <SortButton 
-              active={sort === "recentes"} 
-              onClick={() => setSort("recentes")}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="m3 16 4 4 4-4" />
-                <path d="M7 20V4" />
-                <path d="M11 4h10" />
-                <path d="M11 8h7" />
-                <path d="M11 12h4" />
-              </svg>
-              Mais recentes
-            </SortButton>
-            <SortButton 
-              active={sort === "antigos"} 
-              onClick={() => setSort("antigos")}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="m3 8 4-4 4 4" />
-                <path d="M7 4v16" />
-                <path d="M11 12h4" />
-                <path d="M11 16h7" />
-                <path d="M11 20h10" />
-              </svg>
-              Mais antigos
-            </SortButton>
-          </div>
-        </div>
-
-        {/* Projects List */}
-        <div className="space-y-8">
-          <ProjectCard
-            tag="Planejado"
-            title="Semana Cultural"
-            description="Uma semana dedicada a apresentações artísticas, exposições, debates e workshops organizados pelos alunos. O evento visa promover a expressão cultural e artística dos estudantes, oferecendo um espaço para compartilhar talentos e aprender novas habilidades."
-            startDate="14/10/2023"
-            endDate="20/10/2023"
-            people={["Isabela Lima", "Gabriel Rocha"]}
-          />
-          
-          <ProjectCard
-            tag="Em Andamento"
-            title="Jornal Estudantil"
-            description="Publicação mensal com notícias, entrevistas, dicas de estudo e cultura, produzida pelos alunos para os alunos. O jornal circula em formato digital e impresso, com tiragem de 200 exemplares por edição. Conta com uma equipe de 10 estudantes entre repórteres, fotógrafos e diagramadores."
-            startDate="01/03/2023"
-            endDate="01/12/2023"
-            people={["Juliana Ferreira", "Pedro Santos"]}
-          />
-          
-          <ProjectCard
-            tag="Concluído"
-            title="Campeonato Interclasses"
-            description="Competição esportiva entre as turmas da escola em diversas modalidades como futsal, vôlei, basquete e xadrez. O evento promoveu integração, trabalho em equipe e espírito esportivo entre os alunos, com premiação para as equipes vencedoras."
-            startDate="03/04/2023"
-            endDate="28/04/2023"
-            people={["Rafael Martins", "Ana Silva"]}
-          />
-          
-          <ProjectCard
-            tag="Em Andamento"
-            title="Horta Comunitária"
-            description="Implementação e manutenção de uma horta no espaço escolar, com cultivo de hortaliças e ervas. O projeto envolve alunos de todas as séries e tem como objetivos a educação ambiental, alimentação saudável e trabalho colaborativo."
-            startDate="14/05/2023"
-            endDate="15/12/2023"
-            people={["Lucas Oliveira", "Mariana Costa"]}
-          />
-          
-          <ProjectCard
-            tag="Planejado"
-            title="Festival de Talentos"
-            description="Evento para que os estudantes possam mostrar seus talentos em áreas como música, dança, poesia e artes visuais. O festival ocorrerá no auditório da escola e contará com um júri formado por professores e alunos convidados."
-            startDate="25/11/2023"
-            endDate="25/11/2023"
-            people={["Gabriel Rocha", "Isabela Lima"]}
-          />
-          
-          <ProjectCard
-            tag="Concluído"
-            title="Campanha de Agasalhos"
-            description="Arrecadação de roupas de inverno e cobertores para doação a instituições de caridade. A campanha mobilizou toda a escola e conseguiu arrecadar mais de 300 peças que foram doadas para dois abrigos da região."
-            startDate="09/05/2023"
-            endDate="09/06/2023"
-            people={["Ana Silva", "Pedro Santos"]}
-          />
-        </div>
-      </div>
-    </main>
-  );
-};
-
-type FilterButtonProps = {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-};
-
-const FilterButton = ({ active, onClick, children }: FilterButtonProps) => (
-  <button
-    onClick={onClick}
-    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all shadow-clay ${
-      active
-        ? "bg-gremio-primary text-white"
-        : "bg-white text-foreground hover:bg-gremio-soft"
-    }`}
-  >
-    {children}
-  </button>
-);
-
-const SortButton = ({ active, onClick, children }: FilterButtonProps) => (
-  <button
-    onClick={onClick}
-    className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all ${
-      active
-        ? "bg-gremio-soft text-gremio-primary shadow-clay-inner"
-        : "bg-white text-foreground hover:bg-gremio-soft shadow-clay"
-    }`}
-  >
-    {children}
-  </button>
-);
-
-type ProjectCardProps = {
-  tag: string;
-  title: string;
-  description: string;
-  startDate: string;
-  endDate: string;
-  people: string[];
-};
-
-const ProjectCard = ({ tag, title, description, startDate, endDate, people }: ProjectCardProps) => {
-  let tagColor = "";
-  let tagIcon = null;
-  
-  switch(tag) {
-    case "Planejado":
-      tagColor = "bg-yellow-100 text-yellow-800 border border-yellow-200";
-      tagIcon = (
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
-          <path d="M21 3v5h-5" />
-        </svg>
-      );
-      break;
-    case "Em Andamento":
-      tagColor = "bg-green-100 text-green-800 border border-green-200";
-      tagIcon = (
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 2v4" />
-          <path d="M12 18v4" />
-          <path d="M4.93 4.93l2.83 2.83" />
-          <path d="M16.24 16.24l2.83 2.83" />
-          <path d="M2 12h4" />
-          <path d="M18 12h4" />
-          <path d="M4.93 19.07l2.83-2.83" />
-          <path d="M16.24 7.76l2.83-2.83" />
-        </svg>
-      );
-      break;
-    case "Concluído":
-      tagColor = "bg-blue-100 text-blue-800 border border-blue-200";
-      tagIcon = (
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M20 6 9 17l-5-5" />
-        </svg>
-      );
-      break;
-    default:
-      tagColor = "bg-gray-100 text-gray-800 border border-gray-200";
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    }
   }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  show: { 
+    opacity: 1, 
+    y: 0,
+    scale: 1,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      damping: 15,
+    }
+  }
+};
+
+
+const STATUS_INFO = {
+  planejado: { label: "Planejado", Icon: Lightbulb, colorClass: "bg-yellow-100 text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-300", borderColor: "border-yellow-300 dark:border-yellow-500" },
+  em_andamento: { label: "Em Andamento", Icon: CircleEllipsis, colorClass: "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300", borderColor: "border-blue-300 dark:border-blue-500" },
+  concluido: { label: "Concluído", Icon: CheckCircle2, colorClass: "bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300", borderColor: "border-green-300 dark:border-green-500" },
+  todos: { label: "Todos", Icon: Tag, colorClass: "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200", borderColor: "border-gray-300 dark:border-gray-600"}
+};
+
+export default function Projects() {
+  const [projetos, setProjetos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [filtroStatus, setFiltroStatus] = useState("todos");
+  const [ordem, setOrdem] = useState("recentes");
+  const [busca, setBusca] = useState("");
+  const [projetoExpandido, setProjetoExpandido] = useState(null);
+
+  useEffect(() => {
+    async function carregarProjetos() {
+      try {
+        const dados = await Projeto.list(); // Carrega todos inicialmente
+        setProjetos(dados);
+      } catch (error) {
+        console.error("Erro ao carregar projetos:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    carregarProjetos();
+  }, []);
+
+  const projetosFiltrados = projetos.filter(projeto => {
+    const matchStatus = filtroStatus === "todos" || projeto.status === filtroStatus;
+    const matchBusca = busca === "" || 
+      projeto.titulo.toLowerCase().includes(busca.toLowerCase()) ||
+      (projeto.descricao && projeto.descricao.toLowerCase().includes(busca.toLowerCase()));
+    return matchStatus && matchBusca;
+  });
+
+  const projetosOrdenados = [...projetosFiltrados].sort((a, b) => {
+    const dateA = a.data_inicio || a.created_date;
+    const dateB = b.data_inicio || b.created_date;
+    if (ordem === "recentes") {
+      return new Date(dateB) - new Date(dateA);
+    } else if (ordem === "antigos") {
+      return new Date(dateA) - new Date(dateB);
+    }
+    return 0;
+  });
+
+    // Função auxiliar para renderizar o ícone de status
+    const renderStatusIcon = (status, size = 14) => {
+      const statusInfo = STATUS_INFO[status];
+      if (!statusInfo) return null;
+      
+      const IconComponent = statusInfo.Icon;
+      return <IconComponent size={size} />;
+    };
 
   return (
-    <div className="clay-card hover:shadow-clay-lg transition-all duration-300 bg-white">
-      <div className="flex flex-col md:flex-row md:items-start gap-6">
-        <div className="flex-1">
-          <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium mb-4 ${tagColor}`}>
-            {tagIcon}
-            {tag}
-          </div>
-          <h2 className="text-2xl font-bold text-gremio-primary mb-3">{title}</h2>
-          <p className="text-foreground/80 mb-6">{description}</p>
-          
-          <div className="flex flex-wrap gap-6 mb-4">
-            <div>
-              <span className="text-foreground/60 text-sm block mb-1">Data de Início:</span>
-              <time className="font-medium flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-                  <line x1="16" x2="16" y1="2" y2="6" />
-                  <line x1="8" x2="8" y1="2" y2="6" />
-                  <line x1="3" x2="21" y1="10" y2="10" />
-                </svg>
-                {startDate}
-              </time>
+    <>
+      <div className="max-w-7xl mx-auto">
+        {/* Hero Section */}
+        <motion.div 
+          className="clay-card p-8 md:p-12 bg-gradient-to-br from-[var(--accent-bg)] to-[var(--page-bg-end)] text-center mb-12 relative overflow-hidden"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="absolute -top-10 -left-10 w-60 h-60 bg-[var(--primary-color)] opacity-10 rounded-full filter blur-2xl"></div>
+          <div className="absolute -bottom-10 -right-10 w-60 h-60 bg-[var(--secondary-color)] opacity-10 rounded-full filter blur-2xl"></div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="relative z-10"
+          >
+            <h1 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: 'var(--text-headings)' }}>
+              Nossas Iniciativas em Ação
+            </h1>
+            <p className="text-lg text-[var(--text-default)] max-w-3xl mx-auto mb-8">
+              Explore os projetos que estamos desenvolvendo para tornar nossa escola um lugar
+              ainda melhor. Cada iniciativa é um passo para um futuro mais engajado e colaborativo.
+            </p>
+            <Link
+              to={createPageUrl("Contato")}
+              className="clay-button px-6 py-3 text-lg font-semibold flex items-center gap-2 mx-auto w-fit"
+              style={{ backgroundColor: 'var(--primary-color)', color: 'var(--text-on-primary-bg)' }}
+            >
+              Sugira um Projeto <Lightbulb size={20} />
+            </Link>
+          </motion.div>
+        </motion.div>
+        
+        {/* Filtros e Ordenação */}
+        <motion.div 
+          className="sticky top-[calc(var(--header-height,80px)+1rem)] z-30 clay-card bg-[var(--clay-bg)] p-4 md:p-6 mb-10 shadow-lg"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            <div className="relative md:col-span-1">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search size={18} className="text-[var(--text-muted)]" />
+              </div>
+              <input
+                type="text"
+                placeholder="Buscar projetos..."
+                className="clay-input w-full py-2.5 pl-10 pr-4 focus:outline-none text-[var(--text-default)]"
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
+              />
             </div>
-            <div>
-              <span className="text-foreground/60 text-sm block mb-1">Conclusão:</span>
-              <time className="font-medium flex items-center gap-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-                  <line x1="16" x2="16" y1="2" y2="6" />
-                  <line x1="8" x2="8" y1="2" y2="6" />
-                  <line x1="3" x2="21" y1="10" y2="10" />
-                  <path d="m9 16 2 2 4-4" />
-                </svg>
-                {endDate}
-              </time>
-            </div>
-          </div>
-          
-          <div>
-            <span className="text-foreground/60 text-sm block mb-2">Responsáveis:</span>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {people.map((person, i) => (
-                <span key={i} className="bg-gremio-soft px-3 py-1 rounded-full text-sm flex items-center gap-1">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
-                  {person}
-                </span>
+            
+            <div className="flex flex-wrap justify-center gap-2 md:col-span-2">
+              {Object.entries(STATUS_INFO).map(([statusKey, { label, Icon }]) => (
+                <StatusButton 
+                  key={statusKey}
+                  status={statusKey} 
+                  atual={filtroStatus} 
+                  onClick={() => setFiltroStatus(statusKey)} 
+                  icon={<Icon size={16} />}
+                  label={label}
+                />
               ))}
+              <button
+                className={`clay-button px-3 py-2 text-sm flex items-center gap-1.5 ${
+                  ordem === "recentes" ? "clay-pressed text-[var(--primary-color)]" : "text-[var(--text-muted)]"
+                }`}
+                onClick={() => setOrdem("recentes")}
+              >
+                <ArrowDown size={14} /> Recentes
+              </button>
+              <button
+                className={`clay-button px-3 py-2 text-sm flex items-center gap-1.5 ${
+                  ordem === "antigos" ? "clay-pressed text-[var(--primary-color)]" : "text-[var(--text-muted)]"
+                }`}
+                onClick={() => setOrdem("antigos")}
+              >
+                <ArrowUp size={14} /> Antigos
+              </button>
             </div>
           </div>
-          
-          <button className="text-gremio-primary hover:underline flex items-center gap-1 font-medium">
-            Ver detalhes <ArrowRight size={16} />
+        </motion.div>
+        
+        {/* Lista de Projetos */}
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {Array(4).fill().map((_, i) => <ProjetoCardSkeleton key={i} />)}
+          </div>
+        ) : projetosOrdenados.length === 0 ? (
+          <div className="clay-card p-8 text-center text-[var(--text-muted)]">
+            <Lightbulb size={48} className="mx-auto mb-4 text-[var(--primary-color)] opacity-50" />
+            <p className="text-lg">
+              {busca 
+                ? `Nenhum projeto encontrado para "${busca}".` 
+                : filtroStatus !== "todos" 
+                  ? `Não há projetos ${STATUS_INFO[filtroStatus]?.label.toLowerCase()}.`
+                  : "Nenhum projeto cadastrado ainda."}
+            </p>
+            <p className="mt-2">Que tal <Link to={createPageUrl("Contato")} className="font-semibold text-[var(--primary-color)] hover:underline">sugerir uma nova ideia</Link>?</p>
+          </div>
+        ) : (
+          <motion.div 
+            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+          >
+            {projetosOrdenados.map((projeto) => (
+              <motion.div key={projeto.id} variants={itemVariants}>
+                <ProjetoCard projeto={projeto} onExpand={(id) => setProjetoExpandido(id)} />
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </div>
+
+      <AnimatePresence>
+        {projetoExpandido && (
+           <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-70 z-[100] flex items-center justify-center p-4" 
+            onClick={() => setProjetoExpandido(null)}
+          >
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="clay-card bg-[var(--clay-bg)] max-w-3xl w-full max-h-[90vh] flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-6 border-b border-[var(--accent-color)]/30 flex justify-between items-start">
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-bold text-[var(--text-headings)] mb-1">
+                    {projetos.find(p => p.id === projetoExpandido)?.titulo}
+                  </h2>
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${STATUS_INFO[projetos.find(p => p.id === projetoExpandido)?.status]?.colorClass}`}>
+                    {renderStatusIcon(projetos.find(p => p.id === projetoExpandido)?.status)}
+                    {STATUS_INFO[projetos.find(p => p.id === projetoExpandido)?.status]?.label}
+                  </span>
+                </div>
+                <button 
+                  className="clay-button p-2 text-[var(--text-muted)] hover:text-[var(--primary-color)]" 
+                  onClick={() => setProjetoExpandido(null)}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="p-6 overflow-y-auto space-y-6">
+                 {projetos.find(p => p.id === projetoExpandido)?.imagem && (
+                  <div className="aspect-video rounded-xl overflow-hidden clay-card shadow-inner">
+                    <img 
+                      src={projetos.find(p => p.id === projetoExpandido)?.imagem} 
+                      alt={projetos.find(p => p.id === projetoExpandido)?.titulo} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+                <div>
+                  <h3 className="text-lg font-semibold text-[var(--text-headings)] mb-2">Descrição Completa</h3>
+                  <p className="text-[var(--text-default)] leading-relaxed whitespace-pre-line">
+                    {projetos.find(p => p.id === projetoExpandido)?.descricao}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                  {projetos.find(p => p.id === projetoExpandido)?.data_inicio && (
+                    <div className="flex items-center gap-2 p-3 rounded-lg bg-[var(--accent-bg)]/50">
+                      <Calendar size={18} className="text-[var(--primary-color)]" />
+                      <div>
+                        <span className="font-medium text-[var(--text-muted)]">Início:</span>
+                        <p className="text-[var(--text-default)]">{new Date(projetos.find(p => p.id === projetoExpandido)?.data_inicio).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
+                      </div>
+                    </div>
+                  )}
+                   {projetos.find(p => p.id === projetoExpandido)?.data_conclusao && (
+                    <div className="flex items-center gap-2 p-3 rounded-lg bg-[var(--accent-bg)]/50">
+                      <Clock size={18} className="text-[var(--primary-color)]" />
+                       <div>
+                        <span className="font-medium text-[var(--text-muted)]">Conclusão:</span>
+                        <p className="text-[var(--text-default)]">{new Date(projetos.find(p => p.id === projetoExpandido)?.data_conclusao).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                {projetos.find(p => p.id === projetoExpandido)?.responsaveis && projetos.find(p => p.id === projetoExpandido)?.responsaveis.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-semibold text-[var(--text-headings)] mb-2">Equipe Responsável</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {projetos.find(p => p.id === projetoExpandido)?.responsaveis.map((resp, idx) => (
+                        <span key={idx} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--accent-bg)]/80 text-[var(--text-default)]">
+                          <User size={14} className="text-[var(--primary-color)]" />
+                          {resp}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
+function StatusButton({ status, atual, onClick, icon, label }) {
+  const isActive = status === atual;
+  const { colorClass, borderColor } = STATUS_INFO[status] || {};
+  
+  return (
+    <button
+      className={`clay-button px-3 py-2 text-sm flex items-center gap-1.5 font-medium transition-all duration-200
+                  ${isActive ? `clay-pressed border-2 ${borderColor} ${colorClass}` : 'text-[var(--text-muted)] hover:text-[var(--primary-color)]'}`}
+      onClick={onClick}
+    >
+      {icon}
+      {label}
+    </button>
+  );
+}
+
+function ProjetoCard({ projeto, onExpand }) {
+  const { label, Icon, colorClass } = STATUS_INFO[projeto.status] || {};
+
+  return (
+    <div 
+      className="clay-card bg-[var(--clay-bg)] h-full flex flex-col overflow-hidden group cursor-pointer hover:shadow-lg"
+      onClick={() => onExpand(projeto.id)}
+      style={{'--card-accent-color': `var(--${projeto.status === 'planejado' ? 'yellow' : projeto.status === 'em_andamento' ? 'blue' : 'green'}-500)`}}
+    >
+      {projeto.imagem ? (
+        <div className="aspect-video overflow-hidden relative">
+          <img 
+            src={projeto.imagem} 
+            alt={projeto.titulo} 
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        </div>
+      ) : (
+        <div className="aspect-video flex items-center justify-center bg-gradient-to-br from-[var(--accent-bg)] to-[var(--page-bg-end)]">
+          <Lightbulb size={48} className="text-[var(--primary-color)] opacity-30" />
+        </div>
+      )}
+      <div className="p-5 md:p-6 flex flex-col flex-grow">
+        <div className="mb-3 flex justify-between items-center">
+          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${colorClass}`}>
+            <Icon size={14} />
+            {label}
+          </span>
+        </div>
+        
+        <h2 className="text-xl font-bold text-[var(--text-headings)] mb-2 group-hover:text-[var(--primary-color)] transition-colors duration-200">
+          {projeto.titulo}
+        </h2>
+        <p className="text-sm text-[var(--text-default)] line-clamp-3 flex-grow mb-4 leading-relaxed">
+          {projeto.descricao}
+        </p>
+        
+        <div className="mt-auto pt-4 border-t border-[var(--accent-color)]/20">
+          <div className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-[var(--text-muted)] mb-4">
+            {projeto.data_inicio && (
+              <div className="flex items-center gap-1">
+                <Calendar size={14} className="text-[var(--primary-color)]" />
+                <span>Início: {new Date(projeto.data_inicio).toLocaleDateString('pt-BR')}</span>
+              </div>
+            )}
+            {projeto.responsaveis && projeto.responsaveis.length > 0 && (
+              <div className="flex items-center gap-1">
+                <Users size={14} className="text-[var(--primary-color)]" />
+                <span>{projeto.responsaveis.length} Responsáve{projeto.responsaveis.length > 1 ? 'is' : 'l'}</span>
+              </div>
+            )}
+          </div>
+           <button className="text-sm font-semibold flex items-center gap-1 text-[var(--primary-color)] group-hover:underline">
+            Ver Detalhes <ArrowRight size={14} />
           </button>
         </div>
       </div>
     </div>
   );
-};
+}
 
-export default Projects;
+function ProjetoCardSkeleton() {
+  return (
+    <div className="clay-card p-6 animate-pulse">
+      <div className="aspect-video bg-[var(--accent-bg)] rounded-lg mb-4"></div>
+      <div className="h-4 bg-[var(--accent-bg)] rounded w-1/4 mb-3"></div>
+      <div className="h-6 bg-[var(--accent-bg)] rounded w-3/4 mb-2"></div>
+      <div className="h-4 bg-[var(--accent-bg)] rounded mb-1"></div>
+      <div className="h-4 bg-[var(--accent-bg)] rounded mb-1"></div>
+      <div className="h-4 bg-[var(--accent-bg)] rounded w-5/6 mb-4"></div>
+      <div className="h-4 bg-[var(--accent-bg)] rounded w-1/3"></div>
+    </div>
+  );
+}
