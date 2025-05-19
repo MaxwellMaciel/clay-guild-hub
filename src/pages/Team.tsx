@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Membro } from "@/entities/Membro";
 import { Filter, ChevronDown, Users, Mail, Phone, MapPin, ArrowRight, Star, Rocket, Award } from "lucide-react";
@@ -367,7 +368,7 @@ export default function Team() {
   );
 }
 
-function MembroCard({ membro, onClick }: { membro: any; onClick: () => void }) {
+function MembroCard({ membro, onClick }) {
   return (
     <motion.div 
       className="clay-card bg-[var(--clay-bg)] hover:shadow-lg transition-all duration-300 cursor-pointer group"
@@ -424,5 +425,3 @@ function MembroCard({ membro, onClick }: { membro: any; onClick: () => void }) {
     </motion.div>
   );
 }
-
-export default Team;
