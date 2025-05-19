@@ -1,38 +1,41 @@
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Lock } from 'lucide-react';
+
+// ATENÇÃO: Nunca use validação de senha no front-end em produção!
+// Isso é apenas para ambiente de desenvolvimento/local.
+const SENHA_ADMIN = 'admin123';
 
 export default function AdminLogin() {
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
-  const router = useRouter();
-  const { from } = router.query;
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from || '/admin/noticias';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErro('');
-    console.debug('[DEBUG] Tentando login com senha:', senha);
-
+    setLoading(true);
     try {
-      const response = await fetch('/api/admin/login', {
+      const response = await fetch('http://localhost:4000/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ senha }),
       });
-      console.debug('[DEBUG] Resposta da API de login:', response.status);
-
-      if (response.ok) {
-        console.debug('[DEBUG] Login bem-sucedido. Redirecionando para:', (from as string) || '/admin/noticias');
-        router.push((from as string) || '/admin/noticias');
+      const data = await response.json();
+      if (response.ok && data.success) {
+        // Salva o token JWT no localStorage
+        localStorage.setItem('admin_token', data.token);
+        navigate(from);
       } else {
-        setErro('Senha incorreta');
-        console.warn('[DEBUG] Senha incorreta');
+        setErro(data.message || 'Senha incorreta');
       }
     } catch (error) {
-      setErro('Erro ao fazer login');
-      console.error('[DEBUG] Erro ao fazer login:', error);
+      setErro('Erro ao conectar com o servidor.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,12 +64,10 @@ export default function AdminLogin() {
               <input
                 type="password"
                 value={senha}
-                onChange={(e) => {
-                  setSenha(e.target.value);
-                  console.debug('[DEBUG] Campo senha alterado:', e.target.value);
-                }}
+                onChange={(e) => setSenha(e.target.value)}
                 className="clay-input w-full pl-10"
                 required
+                disabled={loading}
               />
               <Lock size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
             </div>
@@ -82,11 +83,16 @@ export default function AdminLogin() {
             type="submit"
             className="clay-button w-full py-2 flex items-center justify-center gap-2"
             style={{ backgroundColor: 'var(--primary-color)', color: 'var(--text-on-primary-bg)' }}
+            disabled={loading}
           >
             <Lock size={18} />
-            Entrar
+            {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
+        <p className="text-xs mt-4 text-center text-[var(--text-muted)]">
+          <b>Aviso:</b> Agora a senha é validada no backend Express com JWT.<br />
+          Em produção, use HTTPS e tokens JWT!
+        </p>
       </div>
     </div>
   );

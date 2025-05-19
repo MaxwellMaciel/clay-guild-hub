@@ -1,4 +1,3 @@
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
@@ -12,6 +11,8 @@ import Projects from "./pages/Projects";
 import News from "./pages/News";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
+import AdminLogin from "./pages/admin/login";
+import AdminNews from "./pages/admin/News";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,8 @@ const AppContent = () => {
         <Route path="/projetos" element={<Projects />} />
         <Route path="/noticias" element={<News />} />
         <Route path="/contato" element={<Contact />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/noticias" element={<AdminNews />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Layout>
