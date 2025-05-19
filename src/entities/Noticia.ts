@@ -1,4 +1,3 @@
-
 export interface NoticiaData {
   id: number;
   titulo: string;
@@ -12,7 +11,8 @@ export interface NoticiaData {
 
 export class Noticia {
   static async list(ordem?: string): Promise<NoticiaData[]> {
-    // Dados de amostra para notícias
+    // TODO: Implementar integração com Vercel KV
+    // Por enquanto, retornando dados de exemplo
     const noticias: NoticiaData[] = [
       {
         id: 1,
@@ -74,7 +74,6 @@ export class Noticia {
             : valueA.localeCompare(valueB);
         }
         
-        // Para outros tipos, assumindo que são comparáveis
         return reverso 
           ? (valueB > valueA ? 1 : -1) 
           : (valueA > valueB ? 1 : -1);
@@ -82,5 +81,36 @@ export class Noticia {
     }
 
     return noticias;
+  }
+
+  static async create(data: Omit<NoticiaData, 'id'>): Promise<NoticiaData> {
+    // TODO: Implementar integração com Vercel KV
+    // Por enquanto, simulando criação
+    const novaNoticia: NoticiaData = {
+      id: Math.floor(Math.random() * 1000), // Simulando ID
+      ...data
+    };
+    return novaNoticia;
+  }
+
+  static async update(id: number, data: Partial<NoticiaData>): Promise<NoticiaData> {
+    // TODO: Implementar integração com Vercel KV
+    // Por enquanto, simulando atualização
+    const noticiaAtualizada: NoticiaData = {
+      id,
+      titulo: data.titulo || "",
+      conteudo: data.conteudo || "",
+      data: data.data || new Date().toISOString().split('T')[0],
+      autor: data.autor,
+      imagem: data.imagem,
+      destaque: data.destaque || false
+    };
+    return noticiaAtualizada;
+  }
+
+  static async delete(id: number): Promise<void> {
+    // TODO: Implementar integração com Vercel KV
+    // Por enquanto, simulando exclusão
+    console.log(`Notícia ${id} excluída`);
   }
 }

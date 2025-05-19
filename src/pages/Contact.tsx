@@ -1,8 +1,11 @@
-
 import React, { useState } from "react";
-import { Instagram, Facebook, Twitter, Send, MessageSquare, Mail, MapPin, Phone, AlertCircle, CheckCircle, User, HelpCircle, ThumbsUp, AlertTriangle, Menu } from "lucide-react";
+import { Instagram, Facebook, Twitter, Send, MessageSquare, Mail, MapPin, User, HelpCircle, ThumbsUp, AlertTriangle, Menu, CheckCircle, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "../components/ui/use-toast";
+import emailjs from '@emailjs/browser';
+
+// Inicialize o EmailJS com sua chave pública
+emailjs.init("tEwA71O80woPdRKmD");
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -33,7 +36,7 @@ const Contact = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
@@ -44,31 +47,45 @@ const Contact = () => {
         throw new Error("Preencha todos os campos obrigatórios.");
       }
       
-      // Simulate form submission
+      // Configuração do template do EmailJS
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        class: formData.class || "Não informado",
+        message_type: messageTypes.find(t => t.value === formData.messageType)?.label || formData.messageType,
+        message: formData.message,
+      };
+
+      // Enviar e-mail usando EmailJS
+      await emailjs.send(
+        "service_cjfiz48",
+        "template_ax5cu0m",
+        templateParams
+      );
+
+      setIsSubmitting(false);
+      setSuccess(true);
+      toast({
+        title: "Mensagem enviada!",
+        description: "Agradecemos seu contato. Retornaremos em breve.",
+      });
+      
+      // Clear form
+      setFormData({
+        name: '',
+        email: '',
+        class: '',
+        messageType: 'sugestao',
+        message: ''
+      });
+      
+      // Reset success after 5 seconds
       setTimeout(() => {
-        setIsSubmitting(false);
-        setSuccess(true);
-        toast({
-          title: "Mensagem enviada!",
-          description: "Agradecemos seu contato. Retornaremos em breve.",
-        });
-        
-        // Clear form
-        setFormData({
-          name: '',
-          email: '',
-          class: '',
-          messageType: 'sugestao',
-          message: ''
-        });
-        
-        // Reset success after 5 seconds
-        setTimeout(() => {
-          setSuccess(false);
-        }, 5000);
-      }, 1500);
+        setSuccess(false);
+      }, 5000);
     } catch (error: any) {
-      setError(error.message || "Ocorreu um erro ao enviar sua mensagem. Tente novamente.");
+      console.error("Erro ao enviar e-mail:", error);
+      setError("Ocorreu um erro ao enviar sua mensagem. Por favor, tente novamente mais tarde.");
       setIsSubmitting(false);
     }
   };
@@ -295,8 +312,7 @@ const Contact = () => {
                   <h3 className="font-semibold" style={{ color: 'var(--text-headings)'}}>Localização</h3>
                   <p style={{ color: 'var(--text-muted)'}}>
                     Sala do Grêmio Estudantil<br />
-                    Bloco B, próximo à cantina<br />
-                    Escola Modelo
+                    Sala 106, segundo andar<br />
                   </p>
                 </div>
               </div>
@@ -314,18 +330,6 @@ const Contact = () => {
                     >
                       gremio@escolamodelo.edu
                     </a>
-                  </p>
-                </div>
-              </div>
-              
-              <div className="flex items-start gap-4">
-                <div className="p-3 rounded-xl" style={{ background: 'var(--accent-bg)' }}>
-                  <Phone style={{ color: 'var(--primary-color)'}} />
-                </div>
-                <div>
-                  <h3 className="font-semibold" style={{ color: 'var(--text-headings)'}}>Telefone</h3>
-                  <p style={{ color: 'var(--text-muted)'}}>
-                    (00) 1234-5678 (Ramal 123)
                   </p>
                 </div>
               </div>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -184,7 +183,7 @@ export default function Layout({ children, currentPageName }: LayoutProps) {
             </div>
             <div>
               <h1 className="text-xl md:text-2xl font-bold" style={{ color: 'var(--text-headings)' }}>Grêmio Estudantil</h1>
-              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Escola Modelo</p>
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>IFCE - Campus Marangupe</p>
             </div>
           </Link>
           
@@ -268,17 +267,11 @@ export default function Layout({ children, currentPageName }: LayoutProps) {
               </MobileNavLink>
             </nav>
 
-            <div className="mt-auto pt-6 border-t" style={{ borderColor: 'var(--accent-color)' }}>
+            <div className="mt-auto">
               <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>Siga nossas redes:</p>
               <div className="flex space-x-3">
-                <a href="#" className="p-3 rounded-full hover:opacity-80 transition-opacity" style={{ color: 'var(--primary-color)', background: 'var(--accent-bg)' }}>
+                <a href="https://instagram.com/gremio.ifce" target="_blank" rel="noopener noreferrer" className="p-3 rounded-full hover:opacity-80 transition-opacity" style={{ color: 'var(--primary-color)', background: 'var(--accent-bg)' }}>
                   <Instagram size={20} />
-                </a>
-                <a href="#" className="p-3 rounded-full hover:opacity-80 transition-opacity" style={{ color: 'var(--primary-color)', background: 'var(--accent-bg)' }}>
-                  <Facebook size={20} />
-                </a>
-                <a href="#" className="p-3 rounded-full hover:opacity-80 transition-opacity" style={{ color: 'var(--primary-color)', background: 'var(--accent-bg)' }}>
-                  <Twitter size={20} />
                 </a>
               </div>
             </div>
@@ -306,35 +299,27 @@ export default function Layout({ children, currentPageName }: LayoutProps) {
             </div>
             
             <div>
-              <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--footer-text-strong)'}}>Escola Modelo</h3>
-              <p className="mb-2">Av. Educação, 1000</p>
-              <p className="mb-2">Bairro Conhecimento</p>
-              <p>CEP: 00000-000</p>
+              <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--footer-text-strong)'}}>IFCE - Campus Marangupe</h3>
+              <p className="mb-2">Sala do Grêmio Estudantil, sala 106, segundo andar</p>
             </div>
             
             <div>
               <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--footer-text-strong)'}}>Conecte-se</h3>
               <div className="flex space-x-4 mb-4">
-                <a href="#" className="p-2 rounded-full transition-opacity hover:opacity-70" style={{ background: 'var(--footer-icon-bg)' }}>
+                <a href="https://instagram.com/gremio.ifce" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full transition-opacity hover:opacity-70" style={{ background: 'var(--footer-icon-bg)' }}>
                   <Instagram size={20} />
-                </a>
-                <a href="#" className="p-2 rounded-full transition-opacity hover:opacity-70" style={{ background: 'var(--footer-icon-bg)' }}>
-                  <Facebook size={20} />
-                </a>
-                <a href="#" className="p-2 rounded-full transition-opacity hover:opacity-70" style={{ background: 'var(--footer-icon-bg)' }}>
-                  <Twitter size={20} />
                 </a>
               </div>
               <p>
-                <a href="mailto:gremio@escolamodelo.edu" className="underline hover:text-[var(--footer-text-strong)]">
-                  gremio@escolamodelo.edu
+                <a href="mailto:gremio@ifce.edu.br" className="underline hover:text-[var(--footer-text-strong)]">
+                  gremio@ifce.edu.br
                 </a>
               </p>
             </div>
           </div>
           
           <div className="mt-8 pt-8 text-center text-sm" style={{ borderColor: 'var(--footer-border)', borderTopWidth: '1px'}}>
-            <p>© {new Date().getFullYear()} Grêmio Estudantil - Escola Modelo. Todos os direitos reservados.</p>
+            <p>© {new Date().getFullYear()} Grêmio Estudantil - IFCE Campus Marangupe. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>

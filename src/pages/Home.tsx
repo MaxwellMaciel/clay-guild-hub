@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { ArrowRight, Megaphone, Handshake, Target } from "lucide-react";
 
@@ -12,7 +11,7 @@ const Home = () => {
             className="text-4xl md:text-5xl lg:text-6xl font-bold mb-8" 
             style={{ color: 'var(--text-headings)' }}
           >
-            Bem-vindo ao Grêmio Estudantil!
+            Bem-vindo ao Grêmio Estudantil do IFCE - Campus Marangupe!
           </h1>
           <p 
             className="text-lg md:text-xl" 
