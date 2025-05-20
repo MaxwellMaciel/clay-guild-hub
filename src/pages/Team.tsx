@@ -333,9 +333,11 @@ export default function Team() {
                       <h4 className="text-lg font-semibold mb-2" style={{ color: 'var(--text-headings)' }}>
                         Sobre
                       </h4>
-                      <p className="text-[var(--text-default)] leading-relaxed">
-                        {membroSelecionado.descricao}
-                      </p>
+                      <div className="h-10 mb-4 overflow-hidden text-sm text-[var(--text-muted)] line-clamp-2">
+                        <p>
+                          {membroSelecionado.descricao}
+                        </p>
+                      </div>
                     </div>
                   )}
 
@@ -391,11 +393,14 @@ function MembroCard({ membro, onClick }) {
         <p className="text-[var(--primary-color)] font-medium mb-4">
           {membro.cargo}
         </p>
-        {membro.descricao && (
-          <p className="text-sm text-[var(--text-muted)] line-clamp-2 mb-4">
-            {membro.descricao}
-          </p>
-        )}
+        {/* Container fixo para a descrição */}
+        <div className="h-10 mb-4 overflow-hidden text-sm text-[var(--text-muted)] line-clamp-2">
+          {membro.descricao && (
+            <p>
+              {membro.descricao}
+            </p>
+          )}
+        </div>
         <button 
           className="text-sm font-medium flex items-center gap-1 mx-auto group-hover:underline"
           style={{ color: 'var(--primary-color)' }}

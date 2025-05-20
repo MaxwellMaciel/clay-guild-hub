@@ -11,13 +11,6 @@ export class Membro {
   static async list(): Promise<MembroData[]> {
     return [
       {
-        id: "4",
-        nome: "Mariana Costa",
-        cargo: "Secretário",
-        comissao: "Diretoria",
-        descricao: "Aluna do 3º ano com grande habilidade em organização e comunicação."
-      },
-      {
         id: "10",
         nome: "Raquel Matos",
         foto: "/Raquel.jpeg",
