@@ -28,15 +28,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (password: string): Promise<boolean> => {
     try {
-      // Use the environment variable directly for password comparison
-      const correctPassword = import.meta.env.VITE_ADMIN_PASSWORD;
+      // Para fins de demonstração, definir uma senha fixa diretamente no código
+      // Em um ambiente de produção, isso seria armazenado em variáveis de ambiente
+      const SENHA_ADMIN = "senhaadmin";
       
-      if (!correctPassword) {
-        console.error('Admin password is not configured in environment variables');
-        return false;
-      }
-      
-      if (password === correctPassword) {
+      if (password === SENHA_ADMIN) {
         // Store authentication token in session storage (clears on browser close)
         sessionStorage.setItem('admin_token', 'authenticated');
         setIsAuthenticated(true);
