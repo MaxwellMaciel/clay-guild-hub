@@ -9,8 +9,6 @@ export interface MembroData {
 
 export class Membro {
   static async list(): Promise<MembroData[]> {
-    // In a real app, this would fetch from an API
-    // For now, we'll return mock data
     return [
       {
         id: "4",
@@ -18,6 +16,14 @@ export class Membro {
         cargo: "Secretário",
         comissao: "Diretoria",
         descricao: "Aluna do 3º ano com grande habilidade em organização e comunicação."
+      },
+      {
+        id: "10",
+        nome: "Raquel Matos",
+        foto: "/Raquel.jpeg",
+        cargo: "Tesoureira",
+        comissao: "Diretoria",
+        descricao: "A melhor atleta do if 😜"
       },
       {
         id: "9",

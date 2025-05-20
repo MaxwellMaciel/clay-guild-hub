@@ -56,11 +56,11 @@ export default function Team() {
     : membros.filter(membro => membro.comissao === filtroComissao);
 
   const diretoria = membrosFiltrados.filter(membro => 
-    ["presidente", "vice-presidente", "secretário", "tesoureiro"].includes(membro.cargo?.toLowerCase())
+    ["presidente", "vice-presidente", "secretário", "tesoureiro", "tesoureira"].includes(membro.cargo?.toLowerCase())
   );
   
   const outros = membrosFiltrados.filter(membro => 
-    !["presidente", "vice-presidente", "secretário", "tesoureiro"].includes(membro.cargo?.toLowerCase())
+    !["presidente", "vice-presidente", "secretário", "tesoureiro", "tesoureira"].includes(membro.cargo?.toLowerCase())
   );
 
   return (
