@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Instagram, Facebook, Twitter, Send, MessageSquare, Mail, MapPin, User, HelpCircle, ThumbsUp, AlertTriangle, Menu, CheckCircle, AlertCircle } from "lucide-react";
+import { Instagram, Facebook, Twitter, Send, MessageSquare, Mail, MapPin, User, HelpCircle, ThumbsUp, AlertTriangle, Menu, CheckCircle, AlertCircle, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "../components/ui/use-toast";
 import emailjs from '@emailjs/browser';
@@ -291,7 +291,7 @@ const Contact = () => {
         </motion.div>
         
         {/* Contact Information */}
-        <div className="space-y-6">
+        <div className="space-y-6 text-left">
           <motion.div 
             className="clay-card p-6 md:p-8"
             initial={{ opacity: 0, x: 30 }}
@@ -334,73 +334,26 @@ const Contact = () => {
                 </div>
               </div>
             </div>
-            
-            <div className="border-t mt-6 pt-6" style={{ borderColor: 'var(--accent-color)/20' }}>
-              <p className="text-sm" style={{ color: 'var(--text-muted)'}}>
-                <strong style={{ color: 'var(--text-headings)'}}>Horário de atendimento:</strong><br />
-                Segunda a Sexta: 10h às 15h<br />
-                Intervalo: Todos os dias
-              </p>
-            </div>
           </motion.div>
-          
-          <motion.div 
+
+          {/* Horário de Atendimento */}
+          <motion.div
             className="clay-card p-6 md:p-8"
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
+            transition={{ duration: 0.5, delay: 0.5 }} // Adjusted delay
           >
-            <h2 className="text-2xl font-bold mb-6" style={{ color: 'var(--text-headings)'}}>
-              Siga-nos nas Redes Sociais
+            <h2 className="text-2xl font-bold mb-6 flex items-center" style={{ color: 'var(--text-headings)'}}>
+              <Clock className="mr-2" style={{ color: 'var(--primary-color)'}} />
+              Horário de Atendimento
             </h2>
-            
-            <div className="space-y-4">
-              <motion.a 
-                href="#" 
-                className="flex items-center gap-4 p-3 rounded-lg transition-colors"
-                whileHover={{ backgroundColor: 'var(--accent-bg)', x: 5 }}
-                style={{ color: 'var(--text-default)' }}
-              >
-                <div className="p-3 rounded-xl" style={{ background: 'var(--accent-bg)' }}>
-                  <Instagram style={{ color: 'var(--primary-color)'}} />
-                </div>
-                <div>
-                  <h3 className="font-semibold" style={{ color: 'var(--text-headings)'}}>Instagram</h3>
-                  <p style={{ color: 'var(--text-muted)'}}>@gremio.escolamodelo</p>
-                </div>
-              </motion.a>
-              
-              <motion.a 
-                href="#" 
-                className="flex items-center gap-4 p-3 rounded-lg transition-colors"
-                whileHover={{ backgroundColor: 'var(--accent-bg)', x: 5 }}
-                style={{ color: 'var(--text-default)' }}
-              >
-                <div className="p-3 rounded-xl" style={{ background: 'var(--accent-bg)' }}>
-                  <Facebook style={{ color: 'var(--primary-color)'}} />
-                </div>
-                <div>
-                  <h3 className="font-semibold" style={{ color: 'var(--text-headings)'}}>Facebook</h3>
-                  <p style={{ color: 'var(--text-muted)'}}>gremioescolamodelo</p>
-                </div>
-              </motion.a>
-              
-              <motion.a 
-                href="#" 
-                className="flex items-center gap-4 p-3 rounded-lg transition-colors"
-                whileHover={{ backgroundColor: 'var(--accent-bg)', x: 5 }}
-                style={{ color: 'var(--text-default)' }}
-              >
-                <div className="p-3 rounded-xl" style={{ background: 'var(--accent-bg)' }}>
-                  <Twitter style={{ color: 'var(--primary-color)'}} />
-                </div>
-                <div>
-                  <h3 className="font-semibold" style={{ color: 'var(--text-headings)'}}>Twitter</h3>
-                  <p style={{ color: 'var(--text-muted)'}}>@gremioescola</p>
-                </div>
-              </motion.a>
-            </div>
+            <p className="text-sm" style={{ color: 'var(--text-muted)'}}>
+              <strong style={{ color: 'var(--text-headings)'}}>Horário de atendimento:</strong><br />
+              Segunda a Sexta: 10h às 15h<br />
+              Intervalo: Todos os dias
+            </p>
           </motion.div>
+
         </div>
       </div>
     </div>

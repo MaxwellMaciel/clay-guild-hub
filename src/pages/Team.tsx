@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Membro } from "@/entities/Membro";
 import { Filter, ChevronDown, Users, Mail, Phone, MapPin, ArrowRight, Star, Rocket, Award } from "lucide-react";
@@ -340,24 +339,6 @@ export default function Team() {
                     </div>
                   )}
 
-                  {/* Informações de Contato (exemplo) */}
-                  <div className="space-y-4">
-                    <h4 className="text-lg font-semibold mb-4" style={{ color: 'var(--text-headings)' }}>
-                      Contato
-                    </h4>
-                    <div className="flex items-center gap-3 text-[var(--text-muted)]">
-                      <MapPin size={18} className="text-[var(--primary-color)]" />
-                      <span>Sala do Grêmio Estudantil - Bloco B</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-[var(--text-muted)]">
-                      <Mail size={18} className="text-[var(--primary-color)]" />
-                      <span>gremio@escolamodelo.edu</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-[var(--text-muted)]">
-                      <Phone size={18} className="text-[var(--primary-color)]" />
-                      <span>(00) 1234-5678</span>
-                    </div>
-                  </div>
                 </div>
               </div>
             </motion.div>

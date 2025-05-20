@@ -287,7 +287,7 @@ export default function Layout({ children, currentPageName }: LayoutProps) {
       {/* Footer */}
       <footer className="py-12 mt-8 text-[var(--footer-text)]" style={{ backgroundColor: 'var(--footer-bg)'}}>
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--footer-text-strong)'}}>Grêmio Estudantil</h3>
               <p className="mb-2">
@@ -301,20 +301,6 @@ export default function Layout({ children, currentPageName }: LayoutProps) {
             <div>
               <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--footer-text-strong)'}}>IFCE - Campus Marangupe</h3>
               <p className="mb-2">Sala do Grêmio Estudantil, sala 106, segundo andar</p>
-            </div>
-            
-            <div>
-              <h3 className="text-xl font-bold mb-4" style={{ color: 'var(--footer-text-strong)'}}>Conecte-se</h3>
-              <div className="flex space-x-4 mb-4">
-                <a href="https://instagram.com/gremio.ifce" target="_blank" rel="noopener noreferrer" className="p-2 rounded-full transition-opacity hover:opacity-70" style={{ background: 'var(--footer-icon-bg)' }}>
-                  <Instagram size={20} />
-                </a>
-              </div>
-              <p>
-                <a href="mailto:gremio@ifce.edu.br" className="underline hover:text-[var(--footer-text-strong)]">
-                  gremio@ifce.edu.br
-                </a>
-              </p>
             </div>
           </div>
           
