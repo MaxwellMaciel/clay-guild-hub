@@ -1,58 +1,100 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
+import { Session } from '@supabase/supabase-js';
+import { toast } from 'sonner';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (password: string) => Promise<boolean>;
-  logout: () => void;
+  session: Session | null;
+  login: (email: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
+  session: null,
   login: async () => false,
-  logout: () => {},
+  logout: async () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [session, setSession] = useState<Session | null>(null);
 
-  // Check if admin token exists in session storage on mount
   useEffect(() => {
-    const token = sessionStorage.getItem('admin_token');
-    if (token) {
-      setIsAuthenticated(true);
-    }
+    console.log('AuthProvider: Iniciando verificação de sessão');
+    
+    // Verificar sessão atual
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+        console.error('Erro ao verificar sessão:', error);
+        return;
+      }
+      console.log('Sessão atual:', session);
+      setSession(session);
+      setIsAuthenticated(!!session);
+    });
+
+    // Escutar mudanças na autenticação
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Mudança no estado de autenticação:', event, session);
+      setSession(session);
+      setIsAuthenticated(!!session);
+    });
+
+    return () => {
+      console.log('AuthProvider: Limpando subscription');
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const login = async (password: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      // Para fins de demonstração, definir uma senha fixa diretamente no código
-      // Em um ambiente de produção, isso seria armazenado em variáveis de ambiente
-      const SENHA_ADMIN = "senhaadmin";
+      console.log('Tentando login com:', email);
       
-      if (password === SENHA_ADMIN) {
-        // Store authentication token in session storage (clears on browser close)
-        sessionStorage.setItem('admin_token', 'authenticated');
-        setIsAuthenticated(true);
-        return true;
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error('Erro no login:', error);
+        toast.error(error.message);
+        return false;
       }
-      
-      return false;
+
+      console.log('Login bem sucedido:', data);
+      return true;
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Erro inesperado no login:', error);
+      toast.error('Erro inesperado ao fazer login');
       return false;
     }
   };
 
-  const logout = () => {
-    sessionStorage.removeItem('admin_token');
-    setIsAuthenticated(false);
+  const logout = async () => {
+    try {
+      console.log('Tentando logout');
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('Erro no logout:', error);
+        toast.error('Erro ao fazer logout');
+        return;
+      }
+      
+      console.log('Logout bem sucedido');
+      toast.success('Logout realizado com sucesso');
+    } catch (error) {
+      console.error('Erro inesperado no logout:', error);
+      toast.error('Erro inesperado ao fazer logout');
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, session, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

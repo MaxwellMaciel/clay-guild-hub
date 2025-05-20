@@ -1,4 +1,99 @@
-# Welcome to your Lovable project
+# Clay Guild Hub
+
+Sistema de gerenciamento para o Grêmio Estudantil do IFCE Campus Maranguape.
+
+## 🚀 Tecnologias
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Supabase
+- Framer Motion
+
+## 📋 Pré-requisitos
+
+- Node.js 18+
+- npm ou yarn
+- Conta no Supabase
+
+## 🔧 Instalação
+
+1. Clone o repositório:
+```bash
+git clone https://github.com/seu-usuario/clay-guild-hub.git
+cd clay-guild-hub
+```
+
+2. Instale as dependências:
+```bash
+npm install
+# ou
+yarn install
+```
+
+3. Configure as variáveis de ambiente:
+```bash
+cp .env.example .env.local
+```
+Edite o arquivo `.env.local` com suas credenciais do Supabase.
+
+4. Inicie o servidor de desenvolvimento:
+```bash
+npm run dev
+# ou
+yarn dev
+```
+
+## 🔐 Configuração do Supabase
+
+1. Crie uma conta no [Supabase](https://supabase.com)
+2. Crie um novo projeto
+3. Configure as tabelas necessárias:
+   - noticias
+   - projetos
+4. Configure as políticas de segurança (RLS)
+5. Copie as credenciais do projeto para o arquivo `.env.local`
+
+## 📦 Estrutura do Projeto
+
+```
+clay-guild-hub/
+├── src/
+│   ├── components/     # Componentes reutilizáveis
+│   ├── contexts/       # Contextos do React
+│   ├── entities/       # Entidades e modelos
+│   ├── integrations/   # Integrações com serviços externos
+│   ├── lib/           # Utilitários e configurações
+│   ├── pages/         # Páginas da aplicação
+│   └── App.tsx        # Componente principal
+├── public/            # Arquivos estáticos
+└── ...
+```
+
+## 🔒 Segurança
+
+- Autenticação via Supabase
+- Políticas de RLS para proteção dos dados
+- Variáveis de ambiente para credenciais sensíveis
+- Proteção contra ataques comuns
+
+## 🤝 Contribuição
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## 📧 Contato
+
+Grêmio Estudantil do IFCE Campus Maranguape
+- Email: gremio.estudantil@maranguape.ifce.edu.br
 
 ## Project info
 

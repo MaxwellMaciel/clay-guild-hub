@@ -1,97 +1,153 @@
-
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import { Lock, User } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { motion } from 'framer-motion';
 import { toast } from 'sonner';
+import { Lock, Eye, EyeOff, Mail } from 'lucide-react';
 
 export default function AdminLogin() {
-  const [senha, setSenha] = useState('');
-  const [erro, setErro] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  
-  // Get the redirect parameter or default to /admin/noticias
-  const from = new URLSearchParams(location.search).get('from') || '/admin/noticias';
+
+  // Redirecionar se já estiver autenticado
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/admin/noticias');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErro('');
-    setIsLoading(true);
+    setLoading(true);
 
     try {
-      const success = await login(senha);
+      console.log('Tentando login com:', email);
+      const success = await login(email, password);
       
       if (success) {
-        toast.success('Login realizado com sucesso');
-        navigate(from);
+        toast.success('Login realizado com sucesso!');
+        navigate('/admin/noticias');
       } else {
-        setErro('Senha incorreta');
-        toast.error('Senha incorreta');
+        toast.error('Email ou senha incorretos');
       }
     } catch (error) {
-      setErro('Erro ao fazer login');
-      toast.error('Erro ao fazer login');
-      console.error('Erro de login:', error);
+      console.error('Erro no login:', error);
+      toast.error('Erro ao fazer login. Tente novamente.');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-gray-50 to-gray-100">
-      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
-        <div className="text-center mb-6">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-100 mb-4">
-            <User size={32} className="text-primary-600" />
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[var(--page-bg-start)] to-[var(--page-bg-end)]">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md"
+      >
+        <motion.div
+          className="clay-card p-8 text-center relative overflow-hidden"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          {/* Elementos decorativos */}
+          <div className="absolute -top-10 -left-10 w-60 h-60 bg-[var(--primary-color)] opacity-10 rounded-full filter blur-2xl"></div>
+          <div className="absolute -bottom-10 -right-10 w-60 h-60 bg-[var(--secondary-color)] opacity-10 rounded-full filter blur-2xl"></div>
+
+          <div className="relative z-10">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="mb-8"
+            >
+              <div className="w-20 h-20 mx-auto mb-4 rounded-full clay-pressed flex items-center justify-center">
+                <Lock size={32} style={{ color: 'var(--primary-color)' }} />
+              </div>
+              <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--text-headings)' }}>
+                Acesso Administrativo
+              </h1>
+              <p className="text-[var(--text-muted)]">
+                Digite suas credenciais para acessar o painel administrativo
+              </p>
+            </motion.div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="relative">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="clay-input w-full px-4 py-3 pl-12"
+                  placeholder="Digite seu email"
+                  required
+                  disabled={loading}
+                />
+                <Mail size={20} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
+              </div>
+
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="clay-input w-full px-4 py-3 pl-12"
+                  placeholder="Digite sua senha"
+                  required
+                  disabled={loading}
+                />
+                <Lock size={20} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 clay-button p-2"
+                  style={{ color: 'var(--text-muted)' }}
+                  disabled={loading}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+
+              <motion.button
+                type="submit"
+                className="clay-button w-full px-6 py-3 font-medium flex items-center justify-center gap-2"
+                style={{ backgroundColor: 'var(--primary-color)', color: 'var(--text-on-primary-bg)' }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-t-transparent"></div>
+                    Entrando...
+                  </>
+                ) : (
+                  <>
+                    <Lock size={18} />
+                    Entrar
+                  </>
+                )}
+              </motion.button>
+            </form>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 0.5 }}
+              className="mt-8 text-sm"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              <p>Esqueceu suas credenciais? Entre em contato com o administrador.</p>
+            </motion.div>
           </div>
-          <h1 className="text-2xl font-bold mb-2">Área Administrativa</h1>
-          <p className="text-gray-600">Faça login para gerenciar o conteúdo</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700">
-              Senha de Acesso
-            </label>
-            <div className="relative">
-              <input
-                type="password"
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-                className="w-full pr-10 pl-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                required
-                disabled={isLoading}
-                placeholder="Digite a senha de administrador"
-                autoFocus
-              />
-              <Lock size={18} className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            </div>
-          </div>
-
-          {erro && (
-            <p className="text-sm text-red-600">
-              {erro}
-            </p>
-          )}
-
-          <button
-            type="submit"
-            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Verificando...' : 'Entrar'}
-          </button>
-        </form>
-        
-        <div className="mt-6 text-center text-sm">
-          <p className="text-gray-600">
-            Use a senha: <strong>senhaadmin</strong> para entrar
-          </p>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   );
 }
