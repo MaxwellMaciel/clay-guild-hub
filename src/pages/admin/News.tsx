@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect } from "react";
 import { Noticia, NoticiaData } from "@/entities/Noticia";
 import { Plus, Trash2, Edit2, Save, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
+import AdminHeader from "@/components/AdminHeader";
 
 interface NoticiaFormData {
   titulo: string;
@@ -96,9 +98,7 @@ export default function AdminNews() {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-8" style={{ color: 'var(--text-headings)' }}>
-        Gerenciar Notícias
-      </h1>
+      <AdminHeader />
 
       {/* Formulário */}
       <div className="clay-card p-6 mb-8">

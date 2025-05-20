@@ -1,9 +1,9 @@
 
 import React, { useState, useEffect } from "react";
 import { Projeto, ProjetoData } from "@/entities/Projeto";
-import { Plus, Trash2, Edit2, Save, X, Calendar, Tag } from "lucide-react";
-import { motion } from "framer-motion";
+import { Plus, Trash2, Edit2, Save, X } from "lucide-react";
 import { toast } from "sonner";
+import AdminHeader from "@/components/AdminHeader";
 
 interface ProjetoFormData {
   titulo: string;
@@ -26,11 +26,21 @@ export default function AdminProjects() {
     data_inicio: new Date().toISOString().split('T')[0],
     responsaveis: []
   });
-  const [responsavelInput, setResponsavelInput] = useState("");
+  
+  // Helper state for managing responsaveis as a comma-separated string
+  const [responsaveisInput, setResponsaveisInput] = useState("");
 
   useEffect(() => {
     carregarProjetos();
   }, []);
+
+  useEffect(() => {
+    if (editingProjeto) {
+      setResponsaveisInput(editingProjeto.responsaveis.join(", "));
+    } else {
+      setResponsaveisInput("");
+    }
+  }, [editingProjeto]);
 
   const carregarProjetos = async () => {
     try {
@@ -47,18 +57,29 @@ export default function AdminProjects() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Process responsaveis from comma-separated string to array
+    const responsaveisArray = responsaveisInput
+      .split(",")
+      .map(item => item.trim())
+      .filter(item => item.length > 0);
+      
+    const projectData = {
+      ...formData,
+      responsaveis: responsaveisArray
+    };
+    
     try {
       if (editingProjeto) {
-        // Atualizar projeto existente
-        await Projeto.update(editingProjeto.id, formData);
+        // Update existing project
+        await Projeto.update(editingProjeto.id, projectData);
         toast.success("Projeto atualizado com sucesso!");
       } else {
-        // Criar novo projeto
-        await Projeto.create(formData);
+        // Create new project
+        await Projeto.create(projectData);
         toast.success("Projeto criado com sucesso!");
       }
       
-      // Limpar formulário e recarregar projetos
+      // Clear form and reload projects
       setFormData({
         titulo: "",
         descricao: "",
@@ -66,6 +87,7 @@ export default function AdminProjects() {
         data_inicio: new Date().toISOString().split('T')[0],
         responsaveis: []
       });
+      setResponsaveisInput("");
       setEditingProjeto(null);
       await carregarProjetos();
     } catch (error) {
@@ -100,43 +122,11 @@ export default function AdminProjects() {
     }
   };
 
-  const adicionarResponsavel = () => {
-    if (responsavelInput.trim()) {
-      setFormData(prev => ({
-        ...prev,
-        responsaveis: [...prev.responsaveis, responsavelInput.trim()]
-      }));
-      setResponsavelInput("");
-    }
-  };
-
-  const removerResponsavel = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      responsaveis: prev.responsaveis.filter((_, i) => i !== index)
-    }));
-  };
-
-  const renderStatusBadge = (status: string) => {
-    switch(status) {
-      case "planejado":
-        return <span className="bg-yellow-100 text-yellow-700 dark:bg-yellow-500/20 dark:text-yellow-300 px-2 py-1 rounded-full text-xs font-medium">Planejado</span>;
-      case "em_andamento":
-        return <span className="bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 px-2 py-1 rounded-full text-xs font-medium">Em Andamento</span>;
-      case "concluido":
-        return <span className="bg-green-100 text-green-700 dark:bg-green-500/20 dark:text-green-300 px-2 py-1 rounded-full text-xs font-medium">Concluído</span>;
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-8" style={{ color: 'var(--text-headings)' }}>
-        Gerenciar Projetos
-      </h1>
+      <AdminHeader />
 
-      {/* Formulário */}
+      {/* Project Form */}
       <div className="clay-card p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4" style={{ color: 'var(--text-headings)' }}>
           {editingProjeto ? "Editar Projeto" : "Novo Projeto"}
@@ -175,33 +165,22 @@ export default function AdminProjects() {
               </label>
               <select
                 value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
+                onChange={(e) => setFormData({ 
+                  ...formData, 
+                  status: e.target.value as 'planejado' | 'em_andamento' | 'concluido'
+                })}
                 className="clay-input w-full"
                 required
               >
                 <option value="planejado">Planejado</option>
-                <option value="em_andamento">Em Andamento</option>
+                <option value="em_andamento">Em andamento</option>
                 <option value="concluido">Concluído</option>
               </select>
             </div>
 
             <div>
               <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-default)' }}>
-                URL da Imagem (opcional)
-              </label>
-              <input
-                type="url"
-                value={formData.imagem || ""}
-                onChange={(e) => setFormData({ ...formData, imagem: e.target.value })}
-                className="clay-input w-full"
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-default)' }}>
-                Data de Início
+                Data de início
               </label>
               <input
                 type="date"
@@ -211,60 +190,43 @@ export default function AdminProjects() {
                 required
               />
             </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-default)' }}>
-                Data de Conclusão (opcional)
-              </label>
-              <input
-                type="date"
-                value={formData.data_conclusao || ""}
-                onChange={(e) => setFormData({ ...formData, data_conclusao: e.target.value })}
-                className="clay-input w-full"
-              />
-            </div>
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-default)' }}>
-              Responsáveis
+              Data de conclusão (opcional)
             </label>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={responsavelInput}
-                onChange={(e) => setResponsavelInput(e.target.value)}
-                className="clay-input flex-grow"
-                placeholder="Nome do responsável"
-              />
-              <button
-                type="button"
-                onClick={adicionarResponsavel}
-                className="clay-button px-4 py-2"
-                style={{ backgroundColor: 'var(--primary-color)', color: 'var(--text-on-primary-bg)' }}
-              >
-                <Plus size={18} />
-              </button>
-            </div>
-            
-            {/* Lista de responsáveis */}
-            <div className="mt-2 flex flex-wrap gap-2">
-              {formData.responsaveis.map((responsavel, index) => (
-                <div 
-                  key={index}
-                  className="flex items-center gap-1 bg-[var(--accent-bg)] px-2 py-1 rounded-lg"
-                >
-                  <span style={{ color: 'var(--text-default)' }}>{responsavel}</span>
-                  <button
-                    type="button"
-                    onClick={() => removerResponsavel(index)}
-                    className="text-[var(--text-muted)] hover:text-[var(--error-color)]"
-                  >
-                    <X size={14} />
-                  </button>
-                </div>
-              ))}
-            </div>
+            <input
+              type="date"
+              value={formData.data_conclusao || ""}
+              onChange={(e) => setFormData({ ...formData, data_conclusao: e.target.value })}
+              className="clay-input w-full"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-default)' }}>
+              Responsáveis (separados por vírgula)
+            </label>
+            <input
+              type="text"
+              value={responsaveisInput}
+              onChange={(e) => setResponsaveisInput(e.target.value)}
+              className="clay-input w-full"
+              placeholder="João Silva, Maria Oliveira"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1" style={{ color: 'var(--text-default)' }}>
+              URL da Imagem (opcional)
+            </label>
+            <input
+              type="url"
+              value={formData.imagem || ""}
+              onChange={(e) => setFormData({ ...formData, imagem: e.target.value })}
+              className="clay-input w-full"
+            />
           </div>
 
           <div className="flex gap-4">
@@ -298,6 +260,7 @@ export default function AdminProjects() {
                     data_inicio: new Date().toISOString().split('T')[0],
                     responsaveis: []
                   });
+                  setResponsaveisInput("");
                 }}
                 className="clay-button px-4 py-2 flex items-center gap-2"
               >
@@ -309,7 +272,7 @@ export default function AdminProjects() {
         </form>
       </div>
 
-      {/* Lista de Projetos */}
+      {/* Project List */}
       <div className="space-y-4">
         <h2 className="text-xl font-semibold mb-4" style={{ color: 'var(--text-headings)' }}>
           Projetos Cadastrados
@@ -334,15 +297,24 @@ export default function AdminProjects() {
                   <h3 className="font-semibold" style={{ color: 'var(--text-headings)' }}>
                     {projeto.titulo}
                   </h3>
-                  <div className="flex items-center gap-3 text-sm" style={{ color: 'var(--text-muted)' }}>
-                    <div className="flex items-center gap-1">
-                      <Calendar size={14} className="text-[var(--primary-color)]" />
-                      {new Date(projeto.data_inicio).toLocaleDateString('pt-BR')}
-                    </div>
-                    <div>
-                      {renderStatusBadge(projeto.status)}
-                    </div>
-                  </div>
+                  <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                    {new Date(projeto.data_inicio).toLocaleDateString('pt-BR')}
+                    <span className="ml-2 px-2 py-0.5 rounded-full text-xs"
+                          style={{
+                            backgroundColor: 
+                              projeto.status === 'planejado' ? 'var(--info-color-light)' :
+                              projeto.status === 'em_andamento' ? 'var(--warning-color-light)' :
+                              'var(--success-color-light)',
+                            color:
+                              projeto.status === 'planejado' ? 'var(--info-color)' :
+                              projeto.status === 'em_andamento' ? 'var(--warning-color)' :
+                              'var(--success-color)'
+                          }}>
+                      {projeto.status === 'planejado' ? 'Planejado' : 
+                       projeto.status === 'em_andamento' ? 'Em andamento' : 
+                       'Concluído'}
+                    </span>
+                  </p>
                 </div>
 
                 <div className="flex gap-2">
