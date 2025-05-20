@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Noticia } from "@/entities/Noticia";
+import { Noticia, NoticiaData } from "@/entities/Noticia";
 import { Plus, Trash2, Edit2, Save, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
+import { toast } from "sonner";
 
 interface NoticiaFormData {
   titulo: string;
@@ -13,9 +14,9 @@ interface NoticiaFormData {
 }
 
 export default function AdminNews() {
-  const [noticias, setNoticias] = useState<any[]>([]);
+  const [noticias, setNoticias] = useState<NoticiaData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editingNoticia, setEditingNoticia] = useState<any>(null);
+  const [editingNoticia, setEditingNoticia] = useState<NoticiaData | null>(null);
   const [formData, setFormData] = useState<NoticiaFormData>({
     titulo: "",
     conteudo: "",
@@ -33,6 +34,7 @@ export default function AdminNews() {
       setNoticias(dados);
     } catch (error) {
       console.error("Erro ao carregar notícias:", error);
+      toast.error("Erro ao carregar notícias");
     } finally {
       setLoading(false);
     }
@@ -45,9 +47,11 @@ export default function AdminNews() {
       if (editingNoticia) {
         // Atualizar notícia existente
         await Noticia.update(editingNoticia.id, formData);
+        toast.success("Notícia atualizada com sucesso!");
       } else {
         // Criar nova notícia
         await Noticia.create(formData);
+        toast.success("Notícia criada com sucesso!");
       }
       
       // Limpar formulário e recarregar notícias
@@ -61,10 +65,11 @@ export default function AdminNews() {
       await carregarNoticias();
     } catch (error) {
       console.error("Erro ao salvar notícia:", error);
+      toast.error("Erro ao salvar notícia");
     }
   };
 
-  const handleEdit = (noticia: any) => {
+  const handleEdit = (noticia: NoticiaData) => {
     setEditingNoticia(noticia);
     setFormData({
       titulo: noticia.titulo,
@@ -76,13 +81,15 @@ export default function AdminNews() {
     });
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm("Tem certeza que deseja excluir esta notícia?")) {
       try {
         await Noticia.delete(id);
+        toast.success("Notícia excluída com sucesso!");
         await carregarNoticias();
       } catch (error) {
         console.error("Erro ao excluir notícia:", error);
+        toast.error("Erro ao excluir notícia");
       }
     }
   };
@@ -277,4 +284,4 @@ export default function AdminNews() {
       </div>
     </div>
   );
-} 
+}
