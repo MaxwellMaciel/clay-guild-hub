@@ -127,7 +127,7 @@ export default function AdminProjects() {
       <AdminHeader />
 
       {/* Project Form */}
-      <div className="clay-card p-6 mb-8">
+      <div className="clay-card p-6 mb-8" style={{ backgroundColor: 'var(--clay-bg)' }}>
         <h2 className="text-xl font-semibold mb-4" style={{ color: 'var(--text-headings)' }}>
           {editingProjeto ? "Editar Projeto" : "Novo Projeto"}
         </h2>
@@ -263,6 +263,7 @@ export default function AdminProjects() {
                   setResponsaveisInput("");
                 }}
                 className="clay-button px-4 py-2 flex items-center gap-2"
+                style={{ color: 'var(--text-default)' }}
               >
                 <X size={18} />
                 Cancelar Edição
@@ -292,6 +293,7 @@ export default function AdminProjects() {
               <div
                 key={projeto.id}
                 className="clay-card p-4 flex items-center justify-between"
+                style={{ backgroundColor: 'var(--clay-bg)' }}
               >
                 <div>
                   <h3 className="font-semibold" style={{ color: 'var(--text-headings)' }}>
@@ -302,13 +304,13 @@ export default function AdminProjects() {
                     <span className="ml-2 px-2 py-0.5 rounded-full text-xs"
                           style={{
                             backgroundColor: 
-                              projeto.status === 'planejado' ? 'var(--info-color-light)' :
-                              projeto.status === 'em_andamento' ? 'var(--warning-color-light)' :
-                              'var(--success-color-light)',
+                              projeto.status === 'planejado' ? 'var(--info-color-light, "#e0e7ff")' :
+                              projeto.status === 'em_andamento' ? 'var(--warning-color-light, "#fef9c3")' :
+                              'var(--success-color-light, "#dcfce7")',
                             color:
-                              projeto.status === 'planejado' ? 'var(--info-color)' :
-                              projeto.status === 'em_andamento' ? 'var(--warning-color)' :
-                              'var(--success-color)'
+                              projeto.status === 'planejado' ? 'var(--info-color, "#4f46e5")' :
+                              projeto.status === 'em_andamento' ? 'var(--warning-color, "#eab308")' :
+                              'var(--success-color, "#16a34a")'
                           }}>
                       {projeto.status === 'planejado' ? 'Planejado' : 
                        projeto.status === 'em_andamento' ? 'Em andamento' : 
@@ -328,7 +330,7 @@ export default function AdminProjects() {
                   <button
                     onClick={() => handleDelete(projeto.id)}
                     className="clay-button p-2"
-                    style={{ color: 'var(--error-color)' }}
+                    style={{ color: 'var(--error-color, "#dc2626")' }}
                   >
                     <Trash2 size={18} />
                   </button>

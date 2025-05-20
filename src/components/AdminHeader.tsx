@@ -20,22 +20,24 @@ const AdminHeader: React.FC = () => {
 
   return (
     <div className="mb-8">
-      <div className="bg-white shadow-md rounded-lg p-4 mb-4">
+      <div className="clay-card p-4 mb-4" style={{ backgroundColor: 'var(--clay-bg)', borderColor: 'var(--primary-color)' }}>
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-800">
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--text-headings)' }}>
             Painel Administrativo
           </h1>
           <div className="flex items-center gap-2">
             <Link 
               to="/" 
-              className="px-3 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 flex items-center gap-2 transition-all"
+              className="clay-button px-3 py-2 flex items-center gap-2 transition-all"
+              style={{ color: 'var(--text-default)' }}
             >
               <Home size={18} />
               <span className="hidden sm:inline">Site</span>
             </Link>
             <button
               onClick={handleLogout}
-              className="px-3 py-2 bg-red-50 text-red-600 rounded-md hover:bg-red-100 flex items-center gap-2 transition-all"
+              className="clay-button px-3 py-2 flex items-center gap-2 transition-all"
+              style={{ color: 'var(--error-color, "#ff4d4d")' }}
             >
               <LogOut size={18} />
               <span className="hidden sm:inline">Sair</span>
@@ -48,9 +50,12 @@ const AdminHeader: React.FC = () => {
             to="/admin/noticias"
             className={`px-4 py-2 rounded-md flex items-center gap-2 transition-all ${
               isActive('/admin/noticias') 
-                ? 'bg-primary-600 text-white' 
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'clay-pressed' 
+                : 'clay-button'
             }`}
+            style={{ 
+              color: isActive('/admin/noticias') ? 'var(--primary-color)' : 'var(--text-default)',
+            }}
           >
             <FileText size={18} />
             Notícias
@@ -59,9 +64,12 @@ const AdminHeader: React.FC = () => {
             to="/admin/projetos"
             className={`px-4 py-2 rounded-md flex items-center gap-2 transition-all ${
               isActive('/admin/projetos') 
-                ? 'bg-primary-600 text-white' 
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'clay-pressed' 
+                : 'clay-button'
             }`}
+            style={{ 
+              color: isActive('/admin/projetos') ? 'var(--primary-color)' : 'var(--text-default)',
+            }}
           >
             <Folder size={18} />
             Projetos
