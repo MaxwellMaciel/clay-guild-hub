@@ -325,10 +325,10 @@ const Contact = () => {
                   <h3 className="font-semibold" style={{ color: 'var(--text-headings)'}}>E-mail</h3>
                   <p style={{ color: 'var(--text-muted)'}}>
                     <a 
-                      href="mailto:gremio@escolamodelo.edu" 
+                      href="mailto:gremio.estudantil@maranguape.ifce.edu.br" 
                       className="hover:text-[var(--primary-color)] transition-colors"
                     >
-                      gremio@escolamodelo.edu
+                      gremio.estudantil@maranguape.ifce.edu.br
                     </a>
                   </p>
                 </div>

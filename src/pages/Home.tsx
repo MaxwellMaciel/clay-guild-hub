@@ -49,109 +49,18 @@ const Home = () => {
       </section>
 
       {/* Mission Section */}
-      <section className="my-16">
-        <h2 
-          className="text-3xl md:text-4xl font-bold text-center mb-6"
-          style={{ color: 'var(--text-headings)' }}
-        >
-          Nossa Missão
-        </h2>
-        <p 
-          className="text-lg text-center max-w-4xl mx-auto mb-16"
-          style={{ color: 'var(--text-muted)' }}
-        >
-          O Grêmio Estudantil da Escola Modelo existe para construir pontes, inspirar ações e
-          transformar o ambiente escolar em um lugar onde cada estudante se sinta ouvido,
-          valorizado e engajado.
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Card 1 */}
-          <div className="clay-card p-8">
-            <div className="flex justify-center mb-6">
-              <div 
-                className="w-16 h-16 rounded-full flex items-center justify-center"
-                style={{ background: 'var(--accent-bg)' }}
-              >
-                <Megaphone 
-                  className="w-8 h-8" 
-                  style={{ color: 'var(--primary-color)' }}
-                />
-              </div>
-            </div>
-            <h3 
-              className="text-xl font-semibold text-center mb-4"
-              style={{ color: 'var(--text-headings)' }}
-            >
-              Representar e Amplificar
-            </h3>
-            <p 
-              className="text-center"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              Ser a voz ativa dos estudantes, levando suas ideias, 
-              necessidades e preocupações para construir uma escola mais 
-              democrática e participativa.
-            </p>
-          </div>
-
-          {/* Card 2 */}
-          <div className="clay-card p-8">
-            <div className="flex justify-center mb-6">
-              <div 
-                className="w-16 h-16 rounded-full flex items-center justify-center"
-                style={{ background: 'var(--accent-bg)' }}
-              >
-                <Handshake 
-                  className="w-8 h-8" 
-                  style={{ color: 'var(--primary-color)' }} 
-                />
-              </div>
-            </div>
-            <h3 
-              className="text-xl font-semibold text-center mb-4"
-              style={{ color: 'var(--text-headings)' }}
-            >
-              Promover e Integrar
-            </h3>
-            <p 
-              className="text-center"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              Organizar eventos e projetos que incentivem a cultura, o 
-              esporte, o lazer e a integração, fortalecendo os laços e o 
-              sentimento de comunidade.
-            </p>
-          </div>
-
-          {/* Card 3 */}
-          <div className="clay-card p-8">
-            <div className="flex justify-center mb-6">
-              <div 
-                className="w-16 h-16 rounded-full flex items-center justify-center"
-                style={{ background: 'var(--accent-bg)' }}
-              >
-                <Target 
-                  className="w-8 h-8" 
-                  style={{ color: 'var(--primary-color)' }}
-                />
-              </div>
-            </div>
-            <h3 
-              className="text-xl font-semibold text-center mb-4"
-              style={{ color: 'var(--text-headings)' }}
-            >
-              Inovar e Transformar
-            </h3>
-            <p 
-              className="text-center"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              Buscar soluções criativas e sustentáveis para os desafios da 
-              vida escolar, incentivando o protagonismo juvenil e o 
-              desenvolvimento de habilidades.
-            </p>
-          </div>
+      <section className="clay-card p-8 md:p-12 mb-16 bg-gradient-to-br from-[var(--accent-bg)] to-[var(--page-bg-end)] text-center relative overflow-hidden">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ color: 'var(--text-headings)' }}>
+            Nossa Missão
+          </h2>
+          <p className="text-lg leading-relaxed" style={{ color: 'var(--text-default)' }}>
+            O Grêmio Estudantil do IFCE Maranguape existe para construir pontes, inspirar ações e
+            promover um ambiente escolar onde cada estudante se sinta valorizado, ouvido e
+            empoderado. Trabalhamos incansavelmente para defender os interesses dos alunos,
+            levando suas ideias, necessidades e preocupações para construir uma escola mais 
+            democrática e participativa.
+          </p>
         </div>
       </section>
 
